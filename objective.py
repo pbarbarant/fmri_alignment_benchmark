@@ -78,15 +78,14 @@ class Objective(BaseObjective):
         se = StandardScaler()
         X_train = np.vstack(X_train)
         X_train = se.fit_transform(X_train)
-        y_train = np.hstack(y_train).reshape(-1, 1)
+        y_train = np.hstack(y_train).ravel()
         
-        print("Fitting LinearSVC")
         clf = LinearSVC(max_iter=self.max_iter)
         clf.fit(X_train, y_train)        
         
         X_test = self.mask.transform(self.data_decoding_target)
         X_test = se.transform(X_test)
-        y_test = self.dict_labels[self.target].reshape(-1, 1)
+        y_test = self.dict_labels[self.target].ravel()
         
         score = clf.score(X_test, y_test)
         # This method can return many metrics in a dictionary. One of these
