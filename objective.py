@@ -74,7 +74,7 @@ class Objective(BaseObjective):
         y_train = np.hstack(y_train).reshape(-1, 1)
         
         print("Fitting LinearSVC")
-        clf = LinearSVC(max_iter=max_iter)
+        clf = LinearSVC(max_iter=self.max_iter)
         clf.fit(X_train, y_train)        
         
         X_test = self.mask.transform(self.data_decoding_target)
