@@ -22,7 +22,9 @@ class Objective(BaseObjective):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     # This means the OLS objective will have a parameter `self.whiten_y`.
-    parameters = {}
+    parameters = {
+        'max_iter': [100],
+    }
 
     # List of packages needed to run the benchmark.
     # They are installed with conda; to use pip, use 'pip:packagename'. To
@@ -72,7 +74,7 @@ class Objective(BaseObjective):
         y_train = np.hstack(y_train).reshape(-1, 1)
         
         print("Fitting LinearSVC")
-        clf = LinearSVC(max_iter=100)
+        clf = LinearSVC(max_iter=max_iter)
         clf.fit(X_train, y_train)        
         
         X_test = self.mask.transform(self.data_decoding_target)
