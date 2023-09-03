@@ -5,7 +5,6 @@ from benchopt import BaseDataset, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
-    import numpy as np
     from nilearn import masking, maskers
     from benchmark_utils.config import DATA_PATH_IBC, MEMORY
     from pathlib import Path
@@ -81,16 +80,16 @@ class Dataset(BaseDataset):
         dict_decoding = dict()
         dict_labels = dict()
         for subject in self.subjects:
-            alingment_contrasts, decoding_contrasts, labels = self.load_ibc_sound(
+            alignment_contrasts, decoding_contrasts, labels = self.load_ibc_sound(
                 subject, data_path
             )
             dict_labels[subject] = labels
 
             if subject == self.target:
-                data_alignment_target = alingment_contrasts
+                data_alignment_target = alignment_contrasts
                 data_decoding_target = decoding_contrasts
             else:
-                dict_alignment[subject] = alingment_contrasts
+                dict_alignment[subject] = alignment_contrasts
                 dict_decoding[subject] = decoding_contrasts
 
         # The dictionary defines the keyword arguments for `Objective.set_data`

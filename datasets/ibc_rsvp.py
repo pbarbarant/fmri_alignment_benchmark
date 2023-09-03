@@ -5,7 +5,6 @@ from benchopt import BaseDataset, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
-    import numpy as np
     from nilearn import masking, maskers
     from benchmark_utils.config import DATA_PATH_IBC, MEMORY
     from pathlib import Path
@@ -63,7 +62,8 @@ class Dataset(BaseDataset):
             data_path / "rsvp_trial" / "3mm" / f"{subject}.nii.gz"
         )
         labels = pd.read_csv(
-            data_path / "rsvp_trial" / "3mm" / f"{subject}_labels.csv", header=None
+            data_path / "rsvp_trial" / "3mm" / f"{subject}_labels.csv",
+            header=None
         ).values.ravel()
         return alignment_contrasts, decoding_contrasts, labels
 
@@ -75,23 +75,24 @@ class Dataset(BaseDataset):
 
         # Create a masker to extract the data from the brain volume.
         masker_path = data_path / "masks" / "gm_mask_3mm.nii.gz"
-        connected_mask = masking.compute_background_mask(masker_path, connected=True)
+        connected_mask = masking.compute_background_mask(masker_path, 
+                                                         connected=True)
         mask = maskers.NiftiMasker(connected_mask, memory=MEMORY).fit()
 
         dict_alignment = dict()
         dict_decoding = dict()
         dict_labels = dict()
         for subject in self.subjects:
-            alingment_contrasts, decoding_contrasts, labels = self.load_rsvp_trial(
+            alignment_contrasts, decoding_contrasts, labels = self.load_rsvp_trial(
                 subject, data_path
             )
             dict_labels[subject] = labels
 
             if subject == self.target:
-                data_alignment_target = alingment_contrasts
+                data_alignment_target = alignment_contrasts
                 data_decoding_target = decoding_contrasts
             else:
-                dict_alignment[subject] = alingment_contrasts
+                dict_alignment[subject] = alignment_contrasts
                 dict_decoding[subject] = decoding_contrasts
 
         # The dictionary defines the keyword arguments for `Objective.set_data`
