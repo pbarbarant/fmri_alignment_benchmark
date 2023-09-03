@@ -31,7 +31,7 @@ class Dataset(BaseDataset):
     # section in objective.py
     requirements = []
     
-    def __init__(self, subjects, target):
+    def __init__(self, target):
         self.subjects = ['sub-01', 
                          'sub-04',
                          'sub-05',
