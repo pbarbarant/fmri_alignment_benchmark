@@ -12,7 +12,6 @@ joblib/
 
 # Config files
 benchopt.ini
-config.py
 
 .DS_Store
 coverage.xml
