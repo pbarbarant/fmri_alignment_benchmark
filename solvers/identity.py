@@ -1,4 +1,3 @@
-import warnings
 from benchopt import BaseSolver, safe_import_context
 
 # Protect the import with `safe_import_context()`. This allows:
@@ -45,7 +44,6 @@ class Solver(BaseSolver):
         # It runs the algorithm for a given a number of iterations `n_iter`.
         # You can also use a `tolerance` or a `callback`, as described in
         # https://benchopt.github.io/performance_curves.html
-        warnings.filterwarnings('ignore')
         
         dict_alignment_estimators = dict()
         for subject in self.dict_alignment.keys():
