@@ -15,10 +15,10 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=ConvergenceWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
+
 # The benchmark objective must be named `Objective` and
 # inherit from `BaseObjective` for `benchopt` to work properly.
 class Objective(BaseObjective):
-
     # Name to select the objective in the CLI and to display the results.
     name = "fMRI decoding"
 
@@ -30,7 +30,7 @@ class Objective(BaseObjective):
     # All parameters 'p' defined here are available as 'self.p'.
     # This means the OLS objective will have a parameter `self.whiten_y`.
     parameters = {
-        'max_iter': [100],
+        "max_iter": [100],
     }
 
     # List of packages needed to run the benchmark.
@@ -40,13 +40,22 @@ class Objective(BaseObjective):
     # solvers or datasets should be declared in Dataset or Solver (see
     # simulated.py and python-gd.py).
     # Example syntax: requirements = ['numpy', 'pip:jax', 'pytorch:pytorch']
-    requirements = ['fmralign', 'scikit-learn', 'numpy']
+    requirements = ["fmralign", "scikit-learn", "numpy"]
 
     # Minimal version of benchopt required to run this benchmark.
     # Bump it up if the benchmark depends on a new feature of benchopt.
     min_benchopt_version = "1.4"
 
-    def set_data(self, dict_alignment, dict_decoding, data_alignment_target, data_decoding_target, dict_labels, target, mask):
+    def set_data(
+        self,
+        dict_alignment,
+        dict_decoding,
+        data_alignment_target,
+        data_decoding_target,
+        dict_labels,
+        target,
+        mask,
+    ):
         # The keyword arguments of this function are the keys of the dictionary
         # returned by `Dataset.get_data`. This defines the benchmark's
         # API to pass data. This is customizable for each benchmark.
@@ -65,7 +74,7 @@ class Objective(BaseObjective):
         # each benchmark.
         X_train = []
         y_train = []
-        
+
         # print("dict_alignment_estimators", dict_alignment_estimators['sub-03'])
         for subject in self.dict_alignment.keys():
             alignment_estimator = dict_alignment_estimators[subject]
@@ -74,19 +83,19 @@ class Objective(BaseObjective):
             X_train.append(self.mask.transform(aligned_data))
             labels = self.dict_labels[subject]
             y_train.append(labels)
-            
+
         se = StandardScaler()
         X_train = np.vstack(X_train)
         X_train = se.fit_transform(X_train)
         y_train = np.hstack(y_train).ravel()
-        
+
         clf = LinearSVC(max_iter=self.max_iter)
-        clf.fit(X_train, y_train)        
-        
+        clf.fit(X_train, y_train)
+
         X_test = self.mask.transform(self.data_decoding_target)
         X_test = se.transform(X_test)
         y_test = self.dict_labels[self.target].ravel()
-        
+
         score = clf.score(X_test, y_test)
         # This method can return many metrics in a dictionary. One of these
         # metrics needs to be `value` for convergence detection purposes.

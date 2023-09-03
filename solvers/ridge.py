@@ -12,21 +12,20 @@ with safe_import_context() as import_ctx:
 # The benchmark solvers must be named `Solver` and
 # inherit from `BaseSolver` for `benchopt` to work properly.
 class Solver(BaseSolver):
-
     # Name to select the solver in the CLI and to display the results.
-    name = 'ridge'
+    name = "ridge"
 
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        'n_pieces': [300],
+        "n_pieces": [300],
     }
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
-    requirements = ['fmralign', 'joblib']
-    
+    requirements = ["fmralign", "joblib"]
+
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(self, dict_alignment, data_alignment_target, mask):
@@ -44,12 +43,11 @@ class Solver(BaseSolver):
         # It runs the algorithm for a given a number of iterations `n_iter`.
         # You can also use a `tolerance` or a `callback`, as described in
         # https://benchopt.github.io/performance_curves.html
-        
+
         dict_alignment_estimators = dict()
         for subject in self.dict_alignment.keys():
-            
             source_data = self.dict_alignment[subject]
-            
+
             alignment_estimator = PairwiseAlignment(
                 alignment_method="ridge_cv",
                 n_pieces=self.n_pieces,
@@ -57,11 +55,10 @@ class Solver(BaseSolver):
                 memory=Memory(),
                 memory_level=1,
             ).fit(source_data, self.data_alignment_target)
-                
+
             dict_alignment_estimators[subject] = alignment_estimator
-            
+
         self.dict_alignment_estimators = dict_alignment_estimators
-                
 
     def get_result(self):
         # Return the result from one optimization run.
