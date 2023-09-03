@@ -22,9 +22,17 @@ class Dataset(BaseDataset):
     # the cross product for each key in the dictionary.
     # Any parameters 'param' defined here is available as `self.param`.
     parameters = {
-        'target': ['sub-11', 
-                   'sub-13',
-                   ],
+        'target': ['sub-01',
+                'sub-04',
+                'sub-05',
+                'sub-06',
+                'sub-07',
+                'sub-09',
+                'sub-11',
+                'sub-12',
+                'sub-13',
+                'sub-14',
+                ],
     }
 
     # List of packages needed to run the dataset. See the corresponding
@@ -33,16 +41,16 @@ class Dataset(BaseDataset):
     
     def __init__(self, target):
         self.subjects = ['sub-01', 
-                         'sub-04',
-                         'sub-05',
-                         'sub-06',
-                         'sub-07',
-                         'sub-09',
-                         'sub-11',
-                         'sub-12',
-                         'sub-13',
-                         'sub-14',
-                         ]
+                        'sub-04',
+                        'sub-05',
+                        'sub-06',
+                        'sub-07',
+                        'sub-09',
+                        'sub-11',
+                        'sub-12',
+                        'sub-13',
+                        'sub-14',
+                        ]
         self.target = target
         
         
