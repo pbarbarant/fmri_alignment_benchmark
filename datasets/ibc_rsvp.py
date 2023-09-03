@@ -63,7 +63,7 @@ class Dataset(BaseDataset):
         )
         labels = pd.read_csv(
             data_path / "rsvp_trial" / "3mm" / f"{subject}_labels.csv",
-            header=None
+            header=None,
         ).values.ravel()
         return alignment_contrasts, decoding_contrasts, labels
 
@@ -75,17 +75,20 @@ class Dataset(BaseDataset):
 
         # Create a masker to extract the data from the brain volume.
         masker_path = data_path / "masks" / "gm_mask_3mm.nii.gz"
-        connected_mask = masking.compute_background_mask(masker_path, 
-                                                         connected=True)
+        connected_mask = masking.compute_background_mask(
+            masker_path, connected=True
+        )
         mask = maskers.NiftiMasker(connected_mask, memory=MEMORY).fit()
 
         dict_alignment = dict()
         dict_decoding = dict()
         dict_labels = dict()
         for subject in self.subjects:
-            alignment_contrasts, decoding_contrasts, labels = self.load_rsvp_trial(
-                subject, data_path
-            )
+            (
+                alignment_contrasts,
+                decoding_contrasts,
+                labels,
+            ) = self.load_rsvp_trial(subject, data_path)
             dict_labels[subject] = labels
 
             if subject == self.target:

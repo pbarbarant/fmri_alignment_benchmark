@@ -75,7 +75,6 @@ class Objective(BaseObjective):
         X_train = []
         y_train = []
 
-        # print("dict_alignment_estimators", dict_alignment_estimators['sub-03'])
         for subject in self.dict_alignment.keys():
             alignment_estimator = dict_alignment_estimators[subject]
             data_decoding = self.dict_decoding[subject]

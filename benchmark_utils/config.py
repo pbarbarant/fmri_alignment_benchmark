@@ -1,4 +1,6 @@
+# path to IBC data
 DATA_PATH_IBC = (
-    "/data/parietal/store3/work/pbarbara/fmralignbench_data/ibc"  # path to IBC data
+    "/data/parietal/store3/work/pbarbara/fmralignbench_data/ibc"
 )
-MEMORY = "/data/parietal/store3/work/pbarbara/tmp"  # path to memory
+# path to memory
+MEMORY = "/data/parietal/store3/work/pbarbara/tmp"
