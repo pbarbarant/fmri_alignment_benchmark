@@ -5,7 +5,7 @@ My Benchopt Benchmark
 
 Benchopt is a package to simplify and make more transparent and
 reproducible the comparisons of optimization algorithms.
-This benchmark is dedicated to solver of brain alignment problem.
+This benchmark is dedicated to the resolution of the functional brain alignment problem.
 Specifically we consider the decoding accuracy of a classifier on a target
 subject after mapping source subjects to the target subject and using
 the aligned data to train the classifier.
