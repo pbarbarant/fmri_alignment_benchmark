@@ -46,5 +46,5 @@ Use ``benchopt run -h`` for more details about these options, or visit https://b
 
 .. |Build Status| image:: https://github.com/pbarbarant/fmralign_benchmark_old/workflows/Tests/badge.svg
    :target: https://github.com/pbarbarant/fmralign_benchmark_old/actions
-.. |Python 3.6+| image:: https://img.shields.io/badge/python-3.6%2B-blue
-   :target: https://www.python.org/downloads/release/python-360/
+.. |Python 3.11+| image:: https://img.shields.io/badge/python-3.11%2B-blue
+   :target: https://www.python.org/downloads/release/python-3115/
