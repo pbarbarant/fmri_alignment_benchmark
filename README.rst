@@ -1,7 +1,7 @@
 
-My Benchopt Benchmark
+fMRI Alignment Benchmark
 =====================
-|Build Status| |Python 3.7+|
+|Build Status| |Python 3.6+|
 
 Benchopt is a package to simplify and make more transparent and
 reproducible the comparisons of optimization algorithms.
