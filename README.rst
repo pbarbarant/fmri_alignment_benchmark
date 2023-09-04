@@ -10,12 +10,14 @@ Specifically we consider the decoding accuracy of a classifier on a target
 subject after mapping source subjects to the target subject and using
 the aligned data to train the classifier.
 We benchmark the following methods:
+
 * Piecewise Procrustes
 * Ridge Regression
 * FastSRM
 * Optimal Transport
 
 on five different datasets:
+
 * IBC RSVP
 * IBC Sounds
 * Courtois Neuromod
