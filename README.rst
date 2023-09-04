@@ -22,6 +22,7 @@ on five different datasets:
 * IBC Sounds
 * Courtois Neuromod
 * Forrest (2013)
+* BOLD5000
 
 Install
 --------
