@@ -74,7 +74,7 @@ class Dataset(BaseDataset):
         data_path = Path(DATA_PATH_FORREST)
 
         # Create a masker to extract the data from the brain volume.
-        masker_path = data_path / "masks" / "gm_mask_3mm.nii.gz"
+        masker_path = data_path / "gm_mask_3mm.nii.gz"
         connected_mask = masking.compute_background_mask(
             masker_path, connected=True
         )
