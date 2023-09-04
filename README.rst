@@ -1,7 +1,7 @@
 
 My Benchopt Benchmark
 =====================
-|Build Status| |Python| image:: https://img.shields.io/badge/python-3.11-blue.svg :target: https://www.python.org/
+|Build Status| |Python 3.7+|
 
 Benchopt is a package to simplify and make more transparent and
 reproducible the comparisons of optimization algorithms.
