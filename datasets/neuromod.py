@@ -44,11 +44,11 @@ class Dataset(BaseDataset):
 
     def load_neuromod(self, subject, data_path):
         alignment_contrasts = image.load_img(
-            data_path / "3mm" / f"{subject}_task-life_space-MNI152NLin2009cAsym_desc-postproc_bold.nii.gz"
+            data_path
+            / "3mm"
+            / f"{subject}_task-life_space-MNI152NLin2009cAsym_desc-postproc_bold.nii.gz"
         )
-        decoding_contrasts = image.load_img(
-            data_path / "3mm" / f"{subject}.nii.gz"
-        )
+        decoding_contrasts = image.load_img(data_path / "3mm" / f"{subject}.nii.gz")
         labels = pd.read_csv(
             data_path / "3mm" / f"{subject}_labels.csv",
             header=None,
@@ -62,10 +62,11 @@ class Dataset(BaseDataset):
         data_path = Path(DATA_PATH_NEUROMOD)
 
         # Create a masker to extract the data from the brain volume.
-        masker_path = data_path / "tpl-MNI152NLin2009cAsym_res-3mm_label-GM_desc-thr02_probseg.nii.gz"
-        connected_mask = masking.compute_background_mask(
-            masker_path, connected=True
+        masker_path = (
+            data_path
+            / "tpl-MNI152NLin2009cAsym_res-3mm_label-GM_desc-thr02_probseg.nii.gz"
         )
+        connected_mask = masking.compute_background_mask(masker_path, connected=True)
         mask = maskers.NiftiMasker(connected_mask, memory=MEMORY).fit()
 
         dict_alignment = dict()

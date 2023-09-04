@@ -13,11 +13,11 @@ data_path = Path.cwd().parent / "outputs" / "benchopt_run_2023-09-04_14h27m25.pa
 df = pd.read_parquet(data_path)
 # Filter out usless data
 df = df[["solver_name", "objective_value", "data_name", "time"]]
-df['data_name'] = df['data_name'].str.replace(r'\[.*?\]', '', regex=True)
+df["data_name"] = df["data_name"].str.replace(r"\[.*?\]", "", regex=True)
 
 # Remove datasets that are not used
-df.drop(df[df['data_name'] == 'Simulated'].index, inplace=True)
-df.drop(df[df['data_name'] == 'Forrest'].index, inplace=True)
+df.drop(df[df["data_name"] == "Simulated"].index, inplace=True)
+df.drop(df[df["data_name"] == "Forrest"].index, inplace=True)
 # df.drop(df[df['data_name'] == 'Neuromod'].index, inplace=True)
 # compute the mean and std of the objective value for each solver
 df2 = df.groupby(["solver_name", "data_name"]).agg(
@@ -25,12 +25,20 @@ df2 = df.groupby(["solver_name", "data_name"]).agg(
 )
 df2.columns = ["_".join(x) for x in df2.columns.ravel()]
 df2.reset_index(inplace=True)
-df2.drop(df2[~df2['solver_name'].str.contains("identity")].index, inplace=True)
-df2 = df2[["data_name", "objective_value_mean", "objective_value_std", "time_mean", "time_std"]]
+df2.drop(df2[~df2["solver_name"].str.contains("identity")].index, inplace=True)
+df2 = df2[
+    [
+        "data_name",
+        "objective_value_mean",
+        "objective_value_std",
+        "time_mean",
+        "time_std",
+    ]
+]
 # substract df by the mean of the objective value for each solver
 df = df.merge(df2, on=["data_name"])
 df["objective_value"] = df["objective_value"] - df["objective_value_mean"]
-df["time"] = df["time"]/df["time_mean"]
+df["time"] = df["time"] / df["time_mean"]
 df = df.drop(
     columns=[
         "objective_value_mean",
@@ -39,8 +47,8 @@ df = df.drop(
         "time_std",
     ]
 )
-df['objective_value'] *= 100
-df.drop(df[df['solver_name'].str.contains('identity')].index, inplace=True)
+df["objective_value"] *= 100
+df.drop(df[df["solver_name"].str.contains("identity")].index, inplace=True)
 
 # %%
 # seaborn box plot
@@ -68,11 +76,13 @@ sns.stripplot(
 ax1.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 plt.xlabel("Accuracy gain")
 plt.ylabel("Solver")
-plt.legend(
-    title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5)
-)
+plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
 
-solvers = ["Piecewise optimal transport", "Piecewise Procrustes",  "Piecewise ridge regression"]
+solvers = [
+    "Piecewise optimal transport",
+    "Piecewise Procrustes",
+    "Piecewise ridge regression",
+]
 # Fill with grey rectangles
 for i in range(len(solvers)):
     ax1.add_patch(
@@ -87,7 +97,7 @@ for i in range(len(solvers)):
     )
 for x in np.arange(-20, 20, 5):
     if x == 0:
-        plt.axvline(x=x, color="black", alpha=.5, linestyle="-")
+        plt.axvline(x=x, color="black", alpha=0.5, linestyle="-")
     else:
         plt.axvline(x=x, color="black", alpha=0.2, linestyle="--")
 plt.yticks(
@@ -126,13 +136,15 @@ sns.stripplot(
     palette="tab10",
 )
 plt.xlabel("Time factor (relative to anatomical)")
-ax1.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=0, symbol='x'))
+ax1.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=0, symbol="x"))
 plt.ylabel("Solver")
-plt.legend(
-    title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5)
-)
+plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
 
-solvers = ["Piecewise optimal transport", "Piecewise Procrustes",  "Piecewise ridge regression"]
+solvers = [
+    "Piecewise optimal transport",
+    "Piecewise Procrustes",
+    "Piecewise ridge regression",
+]
 # Fill with grey rectangles
 for i in range(len(solvers)):
     ax1.add_patch(
@@ -147,12 +159,12 @@ for i in range(len(solvers)):
     )
 for x in np.arange(0, 100):
     if x == 1:
-        plt.axvline(x=x, color="black", alpha=.7, linestyle="-")
-    elif x%5 == 0:
+        plt.axvline(x=x, color="black", alpha=0.7, linestyle="-")
+    elif x % 5 == 0:
         plt.axvline(x=x, color="black", alpha=0.2, linestyle="--")
 plt.yticks(
     np.arange(len(solvers)),
-    [   
+    [
         "Piecewise\noptimal transport",
         "Piecewise\nProcrustes",
         "Piecewise\nridge regression",
@@ -161,4 +173,3 @@ plt.yticks(
 plt.title("Relative time\n")
 plt.xlim(-2, 30)
 plt.show()
-
