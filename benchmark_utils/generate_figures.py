@@ -8,7 +8,9 @@ from pathlib import Path
 
 # %%
 # Path to the data
-data_path = Path.cwd().parent / "outputs" / "benchopt_run_2023-09-04_14h27m25.parquet"
+data_path = (
+    Path.cwd().parent / "outputs" / "benchopt_run_2023-09-04_14h27m25.parquet"
+)
 
 df = pd.read_parquet(data_path)
 # Filter out usless data
