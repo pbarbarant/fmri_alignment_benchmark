@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import seaborn as sns
 from pathlib import Path
+plt.rcParams["figure.dpi"] = 500
 
 # %%
 # Path to the data
