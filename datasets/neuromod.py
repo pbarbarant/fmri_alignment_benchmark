@@ -5,11 +5,10 @@ from benchopt import BaseDataset, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
-    from nilearn import masking, maskers
     from benchmark_utils.config import DATA_PATH_NEUROMOD, MEMORY
     from pathlib import Path
+    from nilearn import masking, maskers, image
     import pandas as pd
-    from nilearn import image
 
 
 # All datasets must be named `Dataset` and inherit from `BaseDataset`
