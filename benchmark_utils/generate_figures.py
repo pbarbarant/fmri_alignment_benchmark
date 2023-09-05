@@ -1,4 +1,6 @@
 # %%
+import os
+import glob
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,10 +11,13 @@ from pathlib import Path
 # %%
 # Path to the data
 data_path = (
-    Path.cwd().parent / "outputs" / "benchopt_run_2023-09-04_14h27m25.parquet"
+    Path.cwd().parent / "outputs"
 )
+# Parse the latest file
+file_list = glob.glob(os.path.join(data_path, '*.parquet'))
+latest_file = max(file_list, key=os.path.getmtime)
+df = pd.read_parquet(latest_file)
 
-df = pd.read_parquet(data_path)
 # Filter out usless data
 df = df[["solver_name", "objective_value", "data_name", "time"]]
 df["data_name"] = df["data_name"].str.replace(r"\[.*?\]", "", regex=True)
