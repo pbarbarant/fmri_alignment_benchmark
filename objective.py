@@ -30,7 +30,7 @@ class Objective(BaseObjective):
     # All parameters 'p' defined here are available as 'self.p'.
     # This means the OLS objective will have a parameter `self.whiten_y`.
     parameters = {
-        "max_iter": [100],
+        "max_iter": [1e4],
     }
 
     # List of packages needed to run the benchmark.
