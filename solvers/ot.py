@@ -7,6 +7,7 @@ with safe_import_context() as import_ctx:
     from benchopt.stopping_criterion import SingleRunCriterion
     from fmralign.pairwise_alignment import PairwiseAlignment
     from fmralign.alignment_methods import OptimalTransportAlignment
+    import numpy as np
     from joblib import Memory
 
 
@@ -30,15 +31,25 @@ class Solver(BaseSolver):
 
     stopping_criterion = SingleRunCriterion()
 
-    def set_objective(self, dict_alignment, data_alignment_target, mask):
+    def set_objective(
+        self, 
+        dict_alignment,
+        dict_decoding,
+        data_alignment_target,
+        dict_labels,
+        mask
+    ):
         # Define the information received by each solver from the objective.
         # The arguments of this function are the results of the
         # `Objective.get_objective`. This defines the benchmark's API for
         # passing the objective to the solver.
         # It is customizable for each benchmark.
         self.dict_alignment = dict_alignment
+        self.dict_decoding = dict_decoding
         self.data_alignment_target = data_alignment_target
+        self.dict_labels = dict_labels
         self.mask = mask
+
 
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
@@ -61,7 +72,15 @@ class Solver(BaseSolver):
 
             dict_alignment_estimators[subject] = alignment_estimator
 
-        self.dict_alignment_estimators = dict_alignment_estimators
+            data_decoding = self.dict_decoding[subject]
+            aligned_data = alignment_estimator.transform(data_decoding)
+            X_train.append(self.mask.transform(aligned_data))
+            labels = self.dict_labels[subject]
+            y_train.append(labels)
+            
+        self.X_train = np.vstack(X_train)
+        self.y_train = np.hstack(y_train).ravel()
+
 
     def get_result(self):
         # Return the result from one optimization run.
@@ -69,4 +88,7 @@ class Solver(BaseSolver):
         # keyword arguments for `Objective.evaluate_result`
         # This defines the benchmark's API for solvers' results.
         # it is customizable for each benchmark.
-        return self.dict_alignment_estimators
+        return dict(
+            X_train=self.X_train,
+            y_train=self.y_train,
+        )
