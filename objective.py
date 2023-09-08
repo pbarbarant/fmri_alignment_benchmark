@@ -67,26 +67,16 @@ class Objective(BaseObjective):
         self.target = target
         self.mask = mask
 
-    def compute(self, dict_alignment_estimators):
+    def compute(self, result):
         # The keyword arguments of this function are the keys of the
         # dictionary returned by `Solver.get_result`. This defines the
         # benchmark's API to pass solvers' result. This is customizable for
         # each benchmark.
-        X_train = []
-        y_train = []
-
-        for subject in self.dict_alignment.keys():
-            alignment_estimator = dict_alignment_estimators[subject]
-            data_decoding = self.dict_decoding[subject]
-            aligned_data = alignment_estimator.transform(data_decoding)
-            X_train.append(self.mask.transform(aligned_data))
-            labels = self.dict_labels[subject]
-            y_train.append(labels)
+        X_train = result['X_train']
+        y_train = result['y_train']
 
         se = StandardScaler()
-        X_train = np.vstack(X_train)
         X_train = se.fit_transform(X_train)
-        y_train = np.hstack(y_train).ravel()
 
         clf = LinearSVC(max_iter=self.max_iter)
         clf.fit(X_train, y_train)
@@ -115,6 +105,8 @@ class Objective(BaseObjective):
         # It is customizable for each benchmark.
         return dict(
             dict_alignment=self.dict_alignment,
+            dict_decoding=self.dict_decoding,
             data_alignment_target=self.data_alignment_target,
+            dict_labels=self.dict_labels,
             mask=self.mask,
         )
