@@ -6,7 +6,7 @@ from benchopt import BaseDataset, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     import numpy as np
-    from nilearn import masking, maskers
+    from nilearn import masking, maskers, datasets
 
 
 # All datasets must be named `Dataset` and inherit from `BaseDataset`
@@ -23,7 +23,7 @@ class Dataset(BaseDataset):
         "n_samples_alignment": [100],
         "n_samples_decoding": [150],
         "n_features": [
-            46407,
+            1876,
         ],
     }
 
@@ -63,17 +63,8 @@ class Dataset(BaseDataset):
         # API to pass data. It is customizable for each benchmark.
 
         # Create a masker to extract the data from the brain volume.
-        masker_path = (
-            "/data/parietal/store3/work/pbarbara/"
-            "public_analysis_code/ibc_data/gm_mask_3mm.nii.gz"
-        )
-        connected_mask = masking.compute_background_mask(
-            masker_path, connected=True
-        )
-        mask = maskers.NiftiMasker(
-            connected_mask, memory="/data/parietal/store3/work/pbarbara/tmp"
-        ).fit()
-
+        mask_img = datasets.load_mni152_brain_mask(resolution=10)
+        mask = maskers.NiftiMasker(mask_img=mask_img).fit()
         # Generate pseudorandom data using `numpy`.
         dict_alignment = dict()
         dict_decoding = dict()
