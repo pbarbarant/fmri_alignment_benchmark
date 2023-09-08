@@ -6,6 +6,7 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     from benchopt.stopping_criterion import SingleRunCriterion
     from fmralign.pairwise_alignment import PairwiseAlignment
+    from sklearn.preprocessing import StandardScaler
     import numpy as np
     from joblib import Memory
 
@@ -34,8 +35,10 @@ class Solver(BaseSolver):
         dict_alignment,
         dict_decoding,
         data_alignment_target,
+        data_decoding_target,
         dict_labels,
-        mask
+        target,
+        mask,
     ):
         # Define the information received by each solver from the objective.
         # The arguments of this function are the results of the
@@ -45,7 +48,9 @@ class Solver(BaseSolver):
         self.dict_alignment = dict_alignment
         self.dict_decoding = dict_decoding
         self.data_alignment_target = data_alignment_target
+        self.data_decoding_target = data_decoding_target
         self.dict_labels = dict_labels
+        self.target = target
         self.mask = mask
 
 
@@ -56,6 +61,8 @@ class Solver(BaseSolver):
         # https://benchopt.github.io/performance_curves.html
         X_train = []
         y_train = []
+        X_test = []
+        y_test = []
 
         for subject in self.dict_alignment.keys():
             source_data = self.dict_alignment[subject]
@@ -74,8 +81,17 @@ class Solver(BaseSolver):
             labels = self.dict_labels[subject]
             y_train.append(labels)
             
-        self.X_train = np.vstack(X_train)
+        X_train = np.vstack(X_train)
         self.y_train = np.hstack(y_train).ravel()
+        
+        # Test data
+        X_test = self.mask.transform(self.data_decoding_target)
+        self.y_test = self.dict_labels[self.target].ravel()
+        
+        # Standard scaling
+        se = StandardScaler()
+        self.X_train = se.fit_transform(X_train)
+        self.X_test = se.transform(X_test)
         
 
     def get_result(self):
@@ -87,4 +103,6 @@ class Solver(BaseSolver):
         return dict(
             X_train=self.X_train,
             y_train=self.y_train,
+            X_test=self.X_test,
+            y_test=self.y_test,
         )
