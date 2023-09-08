@@ -74,18 +74,15 @@ class Objective(BaseObjective):
         # each benchmark.
         X_train = result['X_train']
         y_train = result['y_train']
+        X_test = result['X_test']
+        y_test = result['y_test']
 
-        se = StandardScaler()
-        X_train = se.fit_transform(X_train)
-
+        # Fit a linear SVM on the training data and evaluate the score on the
+        # test data.
         clf = LinearSVC(max_iter=self.max_iter)
         clf.fit(X_train, y_train)
-
-        X_test = self.mask.transform(self.data_decoding_target)
-        X_test = se.transform(X_test)
-        y_test = self.dict_labels[self.target].ravel()
-
         score = clf.score(X_test, y_test)
+        
         # This method can return many metrics in a dictionary. One of these
         # metrics needs to be `value` for convergence detection purposes.
         return dict(
@@ -107,6 +104,8 @@ class Objective(BaseObjective):
             dict_alignment=self.dict_alignment,
             dict_decoding=self.dict_decoding,
             data_alignment_target=self.data_alignment_target,
+            data_decoding_target=self.data_decoding_target,
             dict_labels=self.dict_labels,
+            target=self.target,
             mask=self.mask,
         )
