@@ -20,8 +20,8 @@ class Dataset(BaseDataset):
     parameters = {
         "subjects": [("sub-01", "sub-02", "sub-03")],
         "target": ["sub-01", "sub-02", "sub-03"],
-        "n_samples_alignment": [10],
-        "n_samples_decoding": [20],
+        "n_samples_alignment": [100],
+        "n_samples_decoding": [150],
         "n_features": [
             46407,
         ],
