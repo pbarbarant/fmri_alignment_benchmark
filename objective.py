@@ -79,7 +79,7 @@ class Objective(BaseObjective):
 
         # Fit a linear SVM on the training data and evaluate the score on the
         # test data.
-        clf = LinearSVC(max_iter=self.max_iter)
+        clf = LinearSVC(max_iter=int(self.max_iter))
         clf.fit(X_train, y_train)
         score = clf.score(X_test, y_test)
         
