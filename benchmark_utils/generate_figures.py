@@ -26,7 +26,7 @@ df["data_name"] = df["data_name"].str.replace(r"\[.*?\]", "", regex=True)
 # Remove datasets that are not used
 df.drop(df[df["data_name"] == "Simulated"].index, inplace=True)
 df.drop(df[df["data_name"] == "Forrest"].index, inplace=True)
-# df.drop(df[df['data_name'] == 'Neuromod'].index, inplace=True)
+# df.drop(df[df['data_name'] == 'BOLD5000'].index, inplace=True)
 # compute the mean and std of the objective value for each solver
 df2 = df.groupby(["solver_name", "data_name"]).agg(
     {"objective_value": ["mean", "std"], "time": ["mean", "std"]}
@@ -87,6 +87,7 @@ plt.ylabel("Solver")
 plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
 
 solvers = [
+    "FastSRM",
     "Piecewise optimal transport",
     "Piecewise Procrustes",
     "Piecewise ridge regression",
@@ -111,6 +112,7 @@ for x in np.arange(-20, 20, 5):
 plt.yticks(
     np.arange(len(solvers)),
     [
+        "FastSRM",
         "Piecewise\noptimal transport",
         "Piecewise\nProcrustes",
         "Piecewise\nridge regression",
@@ -149,6 +151,7 @@ plt.ylabel("Solver")
 plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
 
 solvers = [
+    "FastSRM",
     "Piecewise optimal transport",
     "Piecewise Procrustes",
     "Piecewise ridge regression",
@@ -173,6 +176,7 @@ for x in np.arange(0, 100):
 plt.yticks(
     np.arange(len(solvers)),
     [
+        "FastSRM",
         "Piecewise\noptimal transport",
         "Piecewise\nProcrustes",
         "Piecewise\nridge regression",
