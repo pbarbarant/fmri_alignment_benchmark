@@ -120,6 +120,7 @@ plt.yticks(
 )
 plt.title("Prediction accuracy gain over all target subjects\n")
 plt.xlim(-20, 20)
+plt.savefig("../figures/accuracy_gain.png", bbox_inches="tight")
 plt.show()
 
 # %%
@@ -184,4 +185,5 @@ plt.yticks(
 )
 plt.title("Relative time\n")
 plt.xlim(-2, 30)
+plt.savefig("../figures/time.png", bbox_inches="tight")
 plt.show()
