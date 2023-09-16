@@ -1,8 +1,8 @@
 import torch
+import numpy as np
 from fugw.mappings import FUGW, FUGWSparse
 from fugw.scripts import coarse_to_fine, lmds
 from nilearn import masking
-
 
 class FugwAlignment():
     """Wrapper for FUGW alignment"""
@@ -32,7 +32,7 @@ class FugwAlignment():
         self.radius = radius
     
     
-    def fit(self, X, Y, verbose=False):
+    def fit(self, X, Y, verbose=True):
         """Fit FUGW alignment"""
 
         # Get main connected component of segmentation
@@ -85,11 +85,11 @@ class FugwAlignment():
         
         source_features = self.masker.transform(X)
         target_features = self.masker.transform(Y)
-        source_features_normalized = source_features / torch.linalg.norm(
-            source_features, dim=1
+        source_features_normalized = source_features / np.linalg.norm(
+            source_features, axis=1
         ).reshape(-1, 1)
-        target_features_normalized = target_features / torch.linalg.norm(
-            target_features, dim=1
+        target_features_normalized = target_features / np.linalg.norm(
+            target_features, axis=1
         ).reshape(-1, 1)
 
         coarse_to_fine.fit(
@@ -137,5 +137,6 @@ class FugwAlignment():
         """Transform X"""
         
         features = self.masker.transform(X)
-        return self.mapping.transform(features)
+        transformed_features = self.mapping.transform(features)
+        return self.masker.inverse_transform(transformed_features)
     

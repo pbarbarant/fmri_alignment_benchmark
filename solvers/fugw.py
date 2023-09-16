@@ -69,7 +69,6 @@ class Solver(BaseSolver):
             alignment_estimator = FugwAlignment(
                 masker=self.mask,
             ).fit(source_data, self.data_alignment_target)
-
             data_decoding = self.dict_decoding[subject]
             aligned_data = alignment_estimator.transform(data_decoding)
             X_train.append(self.mask.transform(aligned_data))
