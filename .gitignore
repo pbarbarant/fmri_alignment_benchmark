@@ -6,6 +6,7 @@ __cache__
 .coverage
 **/outputs
 joblib/
+benchopt_run/
 
 # IDE specific folders
 .vscode
