@@ -28,7 +28,7 @@ class Solver(BaseSolver):
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
-    requirements = ["fmralign", "joblib"]
+    requirements = ["fastsrm", "joblib"]
 
     stopping_criterion = SingleRunCriterion()
 
