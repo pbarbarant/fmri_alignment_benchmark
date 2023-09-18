@@ -11,14 +11,14 @@ class FugwAlignment():
         self, 
         masker,
         method="coarse_to_fine",
-        n_samples=1000,
+        n_samples=300,
         alpha_coarse=0.5,
         rho_coarse=1,
         eps_coarse=1e-6,
         alpha_fine=0.5,
         rho_fine=1,
         eps_fine=1e-6,
-        radius=8,
+        radius=5,
     ) -> None:
         self.masker = masker
         self.method = method
