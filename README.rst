@@ -15,6 +15,7 @@ We benchmark the following methods:
 * Ridge Regression
 * FastSRM
 * Optimal Transport
+* FUGW
 
 on five different datasets:
 
