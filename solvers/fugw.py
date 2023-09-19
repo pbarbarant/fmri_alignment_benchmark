@@ -21,7 +21,11 @@ class Solver(BaseSolver):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        "n_pieces": [300],
+        "n_samples": [300],
+        "alpha": [0.3],
+        "rho": [1],
+        "eps": [1e-6],
+        "radius": [5],
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -67,6 +71,14 @@ class Solver(BaseSolver):
 
             alignment_estimator = FugwAlignment(
                 masker=self.mask,
+                n_samples=self.n_samples,
+                alpha_coarse=self.alpha,
+                rho_coarse=self.rho,
+                eps_coarse=self.eps,
+                alpha_fine=self.alpha,
+                rho_fine=self.rho,
+                eps_fine=self.eps,
+                radius=self.radius,
             ).fit(source_data, self.data_alignment_target)
             data_decoding = self.dict_decoding[subject]
             aligned_data = alignment_estimator.transform(data_decoding)
