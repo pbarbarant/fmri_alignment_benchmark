@@ -5,3 +5,4 @@ slurm_job_name: benchopt    # Job name
 slurm_additional_parameters:
   ntasks: 1                 # Number of tasks per job
   cpus-per-task: 10         # requires 10 CPUs per job
+  tasks-per-node: 1         # requires 1 task per node
