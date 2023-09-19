@@ -66,7 +66,7 @@ df.drop(df[df["solver_name"].str.contains("identity")].index, inplace=True)
 
 # %%
 # seaborn box plot
-plt.figure(figsize=(5, 2.5))
+plt.figure(figsize=(5, 3))
 sns.set_theme(style="ticks", palette="pastel")
 plt.rcParams["figure.dpi"] = 500
 ax1 = sns.boxplot(
@@ -133,7 +133,7 @@ plt.show()
 
 # %%
 # seaborn box plot for time
-plt.figure(figsize=(5, 2.5))
+plt.figure(figsize=(5, 3))
 sns.set_theme(style="ticks", palette="pastel")
 plt.rcParams["figure.dpi"] = 500
 ax1 = sns.boxplot(
