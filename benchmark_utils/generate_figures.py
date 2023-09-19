@@ -56,6 +56,12 @@ df = df.drop(
     ]
 )
 df["objective_value"] *= 100
+
+# Put FUGW first
+mask = df['solver_name'].str.contains("fugw")
+df_sorted = pd.concat([df[mask], df[~mask]])
+
+# Drop identity
 df.drop(df[df["solver_name"].str.contains("identity")].index, inplace=True)
 
 # %%
@@ -87,6 +93,7 @@ plt.ylabel("Solver")
 plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
 
 solvers = [
+    "FUGW (ours)",
     "FastSRM",
     "Piecewise optimal transport",
     "Piecewise Procrustes",
@@ -112,6 +119,7 @@ for x in np.arange(-20, 20, 5):
 plt.yticks(
     np.arange(len(solvers)),
     [
+        "FUGW (ours)",
         "FastSRM",
         "Piecewise\noptimal transport",
         "Piecewise\nProcrustes",
@@ -152,6 +160,7 @@ plt.ylabel("Solver")
 plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
 
 solvers = [
+    "FUGW (ours)",
     "FastSRM",
     "Piecewise optimal transport",
     "Piecewise Procrustes",
@@ -177,6 +186,7 @@ for x in np.arange(0, 100):
 plt.yticks(
     np.arange(len(solvers)),
     [
+        "FUGW (ours)",
         "FastSRM",
         "Piecewise\noptimal transport",
         "Piecewise\nProcrustes",
