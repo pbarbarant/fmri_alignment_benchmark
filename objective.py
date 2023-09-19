@@ -72,17 +72,17 @@ class Objective(BaseObjective):
         # dictionary returned by `Solver.get_result`. This defines the
         # benchmark's API to pass solvers' result. This is customizable for
         # each benchmark.
-        X_train = result['X_train']
-        y_train = result['y_train']
-        X_test = result['X_test']
-        y_test = result['y_test']
+        X_train = result["X_train"]
+        y_train = result["y_train"]
+        X_test = result["X_test"]
+        y_test = result["y_test"]
 
         # Fit a linear SVM on the training data and evaluate the score on the
         # test data.
         clf = LinearSVC(max_iter=int(self.max_iter))
         clf.fit(X_train, y_train)
         score = clf.score(X_test, y_test)
-        
+
         # This method can return many metrics in a dictionary. One of these
         # metrics needs to be `value` for convergence detection purposes.
         return dict(

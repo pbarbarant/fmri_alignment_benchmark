@@ -30,7 +30,7 @@ class Dataset(BaseDataset):
             "fold_01",
             "fold_02",
             "fold_03",
-            "fold_04",    
+            "fold_04",
         ],
     }
 
@@ -50,9 +50,7 @@ class Dataset(BaseDataset):
 
     def load_BOLD5000(self, subject, data_path):
         alignment_contrasts = image.load_img(
-            data_path
-            / "derivatives"
-            / f"{subject}_train_300.nii.gz"
+            data_path / "derivatives" / f"{subject}_train_300.nii.gz"
         )
         decoding_contrasts = image.load_img(
             data_path / "derivatives" / f"{subject}_decode_{self.fold}.nii.gz"
@@ -71,9 +69,7 @@ class Dataset(BaseDataset):
 
         # Create a masker to extract the data from the brain volume.
         masker_path = data_path / "derivatives" / "gm_resampled_mask.nii.gz"
-        connected_mask = masking.compute_background_mask(
-            masker_path, connected=True
-        )
+        connected_mask = masking.compute_background_mask(masker_path, connected=True)
         mask = maskers.NiftiMasker(connected_mask, memory=MEMORY).fit()
 
         dict_alignment = dict()

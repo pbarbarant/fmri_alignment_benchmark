@@ -7,15 +7,14 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import seaborn as sns
 from pathlib import Path
+
 plt.rcParams["figure.dpi"] = 500
 
 # %%
 # Path to the data
-data_path = (
-    Path.cwd().parent / "outputs"
-)
+data_path = Path.cwd().parent / "outputs"
 # Parse the latest file
-file_list = glob.glob(os.path.join(data_path, '*.parquet'))
+file_list = glob.glob(os.path.join(data_path, "*.parquet"))
 latest_file = max(file_list, key=os.path.getmtime)
 df = pd.read_parquet(latest_file)
 
@@ -58,7 +57,7 @@ df = df.drop(
 df["objective_value"] *= 100
 
 # Put FUGW first
-mask = df['solver_name'].str.contains("fugw")
+mask = df["solver_name"].str.contains("fugw")
 df_sorted = pd.concat([df[mask], df[~mask]])
 
 # Drop identity

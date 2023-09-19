@@ -4,11 +4,12 @@ from fugw.mappings import FUGW, FUGWSparse
 from fugw.scripts import coarse_to_fine, lmds
 from nilearn import masking
 
-class FugwAlignment():
+
+class FugwAlignment:
     """Wrapper for FUGW alignment"""
-    
+
     def __init__(
-        self, 
+        self,
         masker,
         method="coarse_to_fine",
         n_samples=300,
@@ -24,14 +25,13 @@ class FugwAlignment():
         self.method = method
         self.n_samples = n_samples
         self.alpha_coarse = alpha_coarse
-        self.rho_coarse = rho_coarse 
+        self.rho_coarse = rho_coarse
         self.eps_coarse = eps_coarse
         self.alpha_fine = alpha_fine
-        self.rho_fine = rho_fine 
+        self.rho_fine = rho_fine
         self.eps_fine = eps_fine
         self.radius = radius
-    
-    
+
     def fit(self, X, Y, verbose=False):
         """Fit FUGW alignment"""
 
@@ -44,16 +44,16 @@ class FugwAlignment():
         )
 
         # Compute the embedding of the source and target data
-        source_geometry_embeddings = lmds.compute_lmds_volume(
-            segmentation
-        ).nan_to_num()
+        source_geometry_embeddings = lmds.compute_lmds_volume(segmentation).nan_to_num()
         target_geometry_embeddings = source_geometry_embeddings.clone()
-        source_embeddings_normalized, source_distance_max = (
-            coarse_to_fine.random_normalizing(source_geometry_embeddings)
-        )
-        target_embeddings_normalized, target_distance_max = (
-            coarse_to_fine.random_normalizing(target_geometry_embeddings)
-        )
+        (
+            source_embeddings_normalized,
+            source_distance_max,
+        ) = coarse_to_fine.random_normalizing(source_geometry_embeddings)
+        (
+            target_embeddings_normalized,
+            target_distance_max,
+        ) = coarse_to_fine.random_normalizing(target_geometry_embeddings)
 
         # Subsample vertices as uniformly as possible on the surface
         source_sample = coarse_to_fine.sample_volume_uniformly(
@@ -82,7 +82,7 @@ class FugwAlignment():
             reg_mode="independent",
             divergence="kl",
         )
-        
+
         source_features = self.masker.transform(X)
         target_features = self.masker.transform(Y)
         source_features_normalized = source_features / np.linalg.norm(
@@ -110,12 +110,8 @@ class FugwAlignment():
             # Parametrize step 2 (selection of pairs of indices present in
             # fine-grained's sparsity mask)
             coarse_pairs_selection_method="topk",
-            source_selection_radius=(
-                self.radius / source_distance_max
-            ),
-            target_selection_radius=(
-                self.radius / target_distance_max
-            ),
+            source_selection_radius=(self.radius / source_distance_max),
+            target_selection_radius=(self.radius / target_distance_max),
             # Parametrize step 3 (fine-grained alignment)
             fine_mapping=fine_mapping,
             fine_mapping_solver="mm",
@@ -127,16 +123,14 @@ class FugwAlignment():
             device=torch.device("cuda:0"),
             verbose=verbose,
         )
-            
+
         self.mapping = fine_mapping
-        
+
         return self
-    
-    
+
     def transform(self, X):
         """Transform X"""
-        
+
         features = self.masker.transform(X)
         transformed_features = self.mapping.transform(features)
         return self.masker.inverse_transform(transformed_features)
-    

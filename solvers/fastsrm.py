@@ -33,7 +33,7 @@ class Solver(BaseSolver):
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(
-        self, 
+        self,
         dict_alignment,
         dict_decoding,
         data_alignment_target,
@@ -55,7 +55,6 @@ class Solver(BaseSolver):
         self.target = target
         self.mask = mask
 
-
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
         # It runs the algorithm for a given a number of iterations `n_iter`.
@@ -64,11 +63,11 @@ class Solver(BaseSolver):
         X_train = []
         y_train = []
         X_test = []
-        
+
         srm_path = os.path.join(MEMORY, "fastsrm")
         if not os.path.exists(srm_path):
             os.makedirs(srm_path)
-            
+
         srm = IdentifiableFastSRM(
             n_components=self.n_components,
             aggregate="mean",
@@ -78,30 +77,34 @@ class Solver(BaseSolver):
             n_jobs=5,
         )
 
-        alignment_array = [self.mask.transform(contrasts).T for _, contrasts in self.dict_alignment.items()]
+        alignment_array = [
+            self.mask.transform(contrasts).T
+            for _, contrasts in self.dict_alignment.items()
+        ]
         alignment_array.append(self.mask.transform(self.data_alignment_target).T)
         alignment_estimator = srm.fit(alignment_array)
-        
+
         for subject in self.dict_alignment.keys():
             data_decoding = self.dict_decoding[subject]
-            aligned_data = alignment_estimator.transform([self.mask.transform(data_decoding).T]).T
+            aligned_data = alignment_estimator.transform(
+                [self.mask.transform(data_decoding).T]
+            ).T
             X_train.append(aligned_data)
             labels = self.dict_labels[subject]
             y_train.append(labels)
-        
+
         X_train = np.vstack(X_train)
         self.y_train = np.hstack(y_train).ravel()
-        
+
         # Align the test data
         X_test = self.mask.transform(self.data_decoding_target)
         X_test = alignment_estimator.transform([X_test.T]).T
-        
+
         # Standard scaling
         se = StandardScaler()
         self.X_train = se.fit_transform(X_train)
         self.X_test = se.transform(X_test)
         self.y_test = self.dict_labels[self.target].ravel()
-
 
     def get_result(self):
         # Return the result from one optimization run.

@@ -31,7 +31,7 @@ class Solver(BaseSolver):
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(
-        self, 
+        self,
         dict_alignment,
         dict_decoding,
         data_alignment_target,
@@ -52,7 +52,6 @@ class Solver(BaseSolver):
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
-
 
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
@@ -80,19 +79,18 @@ class Solver(BaseSolver):
             X_train.append(self.mask.transform(aligned_data))
             labels = self.dict_labels[subject]
             y_train.append(labels)
-            
+
         X_train = np.vstack(X_train)
         self.y_train = np.hstack(y_train).ravel()
-        
+
         # Test data
         X_test = self.mask.transform(self.data_decoding_target)
         self.y_test = self.dict_labels[self.target].ravel()
-        
+
         # Standard scaling
         se = StandardScaler()
         self.X_train = se.fit_transform(X_train)
         self.X_test = se.transform(X_test)
-        
 
     def get_result(self):
         # Return the result from one optimization run.
