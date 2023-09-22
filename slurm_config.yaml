@@ -5,4 +5,4 @@ slurm_job_name: benchopt    # Job name
 slurm_additional_parameters:
   gpus-per-node: 1
   cpus-per-task: 10         # requires 10 CPUs per job
-  mem-per-gpu: 30G          # requires 30G of RAM per GPU
+  # array: 1-10%2             # run 10 jobs in parallel
