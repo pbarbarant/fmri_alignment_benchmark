@@ -44,7 +44,9 @@ class FugwAlignment:
         )
 
         # Compute the embedding of the source and target data
-        source_geometry_embeddings = lmds.compute_lmds_volume(segmentation).nan_to_num()
+        source_geometry_embeddings = lmds.compute_lmds_volume(
+            segmentation, k=12, n_landmarks=1000, anisotropy=(3, 3, 3)
+        ).nan_to_num()
         target_geometry_embeddings = source_geometry_embeddings.clone()
         (
             source_embeddings_normalized,
