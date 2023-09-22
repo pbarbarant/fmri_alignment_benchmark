@@ -21,11 +21,11 @@ class Solver(BaseSolver):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        "n_samples": [100],
-        "alpha": [0.5],
+        "n_samples": [1e4],
+        "alpha": [0.2],
         "rho": [1.0],
         "eps": [1e-6],
-        "radius": [3],
+        "radius": [5],
     }
 
     # List of packages needed to run the solver. See the corresponding
