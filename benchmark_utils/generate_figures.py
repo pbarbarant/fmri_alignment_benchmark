@@ -56,10 +56,6 @@ df = df.drop(
 )
 df["objective_value"] *= 100
 
-# Put FUGW first
-mask = df["solver_name"].str.contains("fugw")
-df_sorted = pd.concat([df[mask], df[~mask]])
-
 # Drop identity
 df.drop(df[df["solver_name"].str.contains("identity")].index, inplace=True)
 
@@ -115,16 +111,16 @@ for x in np.arange(-20, 20, 5):
         plt.axvline(x=x, color="black", alpha=0.5, linestyle="-")
     else:
         plt.axvline(x=x, color="black", alpha=0.2, linestyle="--")
-plt.yticks(
-    np.arange(len(solvers)),
-    [
-        "FUGW (ours)",
-        "FastSRM",
-        "Piecewise\noptimal transport",
-        "Piecewise\nProcrustes",
-        "Piecewise\nridge regression",
-    ],
-)
+# plt.yticks(
+#     np.arange(len(solvers)),
+#     [
+#         "FUGW (ours)",
+#         "FastSRM",
+#         "Piecewise\noptimal transport",
+#         "Piecewise\nProcrustes",
+#         "Piecewise\nridge regression",
+#     ],
+# )
 plt.title("Prediction accuracy gain over all target subjects\n")
 plt.xlim(-20, 20)
 plt.savefig("../outputs/figures/accuracy_gain.png", bbox_inches="tight")
@@ -182,16 +178,16 @@ for x in np.arange(0, 100):
         plt.axvline(x=x, color="black", alpha=0.7, linestyle="-")
     elif x % 5 == 0:
         plt.axvline(x=x, color="black", alpha=0.2, linestyle="--")
-plt.yticks(
-    np.arange(len(solvers)),
-    [
-        "FUGW (ours)",
-        "FastSRM",
-        "Piecewise\noptimal transport",
-        "Piecewise\nProcrustes",
-        "Piecewise\nridge regression",
-    ],
-)
+# plt.yticks(
+#     np.arange(len(solvers)),
+#     [
+#         "FUGW (ours)",
+#         "FastSRM",
+#         "Piecewise\noptimal transport",
+#         "Piecewise\nProcrustes",
+#         "Piecewise\nridge regression",
+#     ],
+# )
 plt.title("Relative time\n")
 plt.xlim(-2, 30)
 plt.savefig("../outputs/figures/time.png", bbox_inches="tight")
