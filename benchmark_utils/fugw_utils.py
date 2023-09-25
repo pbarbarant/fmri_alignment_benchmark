@@ -32,7 +32,7 @@ class FugwAlignment:
         self.eps_fine = eps_fine
         self.radius = radius
 
-    def fit(self, X, Y, verbose=False):
+    def fit(self, X, Y, verbose=True):
         """Fit FUGW alignment"""
 
         # Get main connected component of segmentation
