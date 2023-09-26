@@ -3,6 +3,7 @@ import numpy as np
 from fugw.mappings import FUGW, FUGWSparse
 from fugw.scripts import coarse_to_fine, lmds
 from nilearn import masking
+from sklearn.preprocessing import StandardScaler
 
 
 class FugwAlignment:
@@ -87,6 +88,11 @@ class FugwAlignment:
 
         source_features = self.masker.transform(X)
         target_features = self.masker.transform(Y)
+        
+        # Standardize features
+        source_features = StandardScaler().fit_transform(source_features)
+        target_features = StandardScaler().fit_transform(target_features)
+        
         source_features_normalized = source_features / np.linalg.norm(
             source_features, axis=1
         ).reshape(-1, 1)
