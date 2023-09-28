@@ -26,6 +26,7 @@ class Solver(BaseSolver):
         "rho": [1.0],
         "eps": [1e-6],
         "radius": [8],
+        "id_reg": [False, True],
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -79,6 +80,7 @@ class Solver(BaseSolver):
                 rho_fine=self.rho,
                 eps_fine=self.eps,
                 radius=self.radius,
+                id_reg=self.id_reg,
             ).fit(source_data, self.data_alignment_target)
             data_decoding = self.dict_decoding[subject]
             aligned_data = alignment_estimator.transform(data_decoding)
