@@ -22,10 +22,10 @@ class Solver(BaseSolver):
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
         "n_samples": [1e4],
-        "alpha": [0.2, 0.5, 0.8],
+        "alpha": [0.5],
         "rho": [1.0],
         "eps": [1e-6],
-        "radius": [5, 8, 10],
+        "radius": [8],
     }
 
     # List of packages needed to run the solver. See the corresponding
