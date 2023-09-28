@@ -21,6 +21,7 @@ class FugwAlignment:
         rho_fine=1,
         eps_fine=1e-6,
         radius=5,
+        id_reg=False,
     ) -> None:
         self.masker = masker
         self.method = method
@@ -32,6 +33,7 @@ class FugwAlignment:
         self.rho_fine = rho_fine
         self.eps_fine = eps_fine
         self.radius = radius
+        self.id_reg = id_reg
 
     def fit(self, X, Y, verbose=True):
         """Fit FUGW alignment"""
@@ -57,6 +59,10 @@ class FugwAlignment:
             target_embeddings_normalized,
             target_distance_max,
         ) = coarse_to_fine.random_normalizing(target_geometry_embeddings)
+        
+        # Normalize embeddings
+        # source_embeddings_normalized /= self.degree
+        # target_embeddings_normalized /= self.degree
 
         # Subsample vertices as uniformly as possible on the surface
         source_sample = coarse_to_fine.sample_volume_uniformly(
@@ -140,5 +146,8 @@ class FugwAlignment:
         """Transform X"""
 
         features = self.masker.transform(X)
-        transformed_features = self.mapping.transform(features)
+        if self.id_reg==False:
+            transformed_features = self.mapping.transform(features)
+        else:
+            transformed_features = (self.mapping.transform(features) + features) / 2
         return self.masker.inverse_transform(transformed_features)
