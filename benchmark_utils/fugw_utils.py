@@ -23,6 +23,27 @@ class FugwAlignment:
         radius=5,
         id_reg=False,
     ) -> None:
+        """Initialize FUGW alignment
+
+        Parameters
+        ----------
+        masker : NiftiMasker
+            Masker used to extract features
+        method : str, optional
+            Method used to compute FUGW alignments, by default "coarse_to_fine"
+        n_samples : int, optional
+            Number of samples from the embedding, by default 300
+        alpha_coarse : float, optional, by default 0.5
+        rho_coarse : int, optional, by default 1
+        eps_coarse : _type_, optional, by default 1e-6
+        alpha_fine : float, optional, by default 0.5
+        rho_fine : int, optional, by default 1
+        eps_fine : _type_, optional, by default 1e-6
+        radius : int, optional
+            Radius around the sampled points in mm, by default 5
+        id_reg : bool, optional
+            Interpolate the resulting mapping with the identity matrix, by default False
+        """        
         self.masker = masker
         self.method = method
         self.n_samples = n_samples
@@ -36,7 +57,21 @@ class FugwAlignment:
         self.id_reg = id_reg
 
     def fit(self, X, Y, verbose=True):
-        """Fit FUGW alignment"""
+        """Fit FUGW alignment
+
+        Parameters
+        ----------
+        X : NiftiImage
+            Source features
+        Y : NiftiImage
+            Target
+        verbose : bool, optional, by default True
+
+        Returns
+        -------
+        self : FugwAlignment
+            Fitted FUGW alignment
+        """
 
         # Get main connected component of segmentation
         segmentation = (
@@ -143,9 +178,22 @@ class FugwAlignment:
         return self
 
     def transform(self, X):
-        """Transform X"""
+        """Project features using the fitted FUGW alignment
+
+        Parameters
+        ----------
+        X : NiftiImage
+            Source features
+
+        Returns
+        -------
+        NiftiImage
+            Projected features
+        """
 
         features = self.masker.transform(X)
+        
+        # If id_reg is True, interpolate the resulting mapping with the identity matrix
         if self.id_reg==False:
             transformed_features = self.mapping.transform(features)
         else:
