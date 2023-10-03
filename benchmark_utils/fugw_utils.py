@@ -46,7 +46,7 @@ class FugwAlignment:
         """        
         self.masker = masker
         self.method = method
-        self.n_samples = n_samples
+        self.n_samples = int(n_samples)
         self.alpha_coarse = alpha_coarse
         self.rho_coarse = rho_coarse
         self.eps_coarse = eps_coarse
@@ -56,7 +56,7 @@ class FugwAlignment:
         self.radius = radius
         self.id_reg = id_reg
 
-    def fit(self, X, Y, verbose=True):
+    def fit(self, X, Y, verbose=False):
         """Fit FUGW alignment
 
         Parameters
