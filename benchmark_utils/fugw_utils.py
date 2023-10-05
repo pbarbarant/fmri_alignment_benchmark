@@ -55,7 +55,7 @@ class FugwAlignment:
         self.radius = radius
         self.id_reg = id_reg
 
-    def fit(self, X, Y, verbose=False):
+    def fit(self, X, Y, verbose=True):
         """Fit FUGW alignment
 
         Parameters
