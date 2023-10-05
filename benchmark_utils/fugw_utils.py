@@ -3,7 +3,6 @@ import numpy as np
 from fugw.mappings import FUGW, FUGWSparse
 from fugw.scripts import coarse_to_fine, lmds
 from nilearn import masking
-from sklearn.preprocessing import StandardScaler
 
 
 class FugwAlignment:
@@ -130,10 +129,6 @@ class FugwAlignment:
         source_features = self.masker.transform(X)
         target_features = self.masker.transform(Y)
         
-        # Standardize features
-        source_features = StandardScaler().fit_transform(source_features)
-        target_features = StandardScaler().fit_transform(target_features)
-        
         source_features_normalized = source_features / np.linalg.norm(
             source_features, axis=1
         ).reshape(-1, 1)
@@ -153,7 +148,7 @@ class FugwAlignment:
             coarse_mapping=coarse_mapping,
             coarse_mapping_solver="mm",
             coarse_mapping_solver_params={
-                "nits_bcd": 10,
+                "nits_bcd": 50,
                 "nits_uot": 100,
             },
             # Parametrize step 2 (selection of pairs of indices present in
@@ -165,7 +160,7 @@ class FugwAlignment:
             fine_mapping=fine_mapping,
             fine_mapping_solver="mm",
             fine_mapping_solver_params={
-                "nits_bcd": 10,
+                "nits_bcd": 5,
                 "nits_uot": 100,
             },
             # Misc
