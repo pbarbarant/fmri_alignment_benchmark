@@ -31,7 +31,7 @@ class Dataset(BaseDataset):
         self.subjects = ["sub-01", "sub-02", "sub-03"]
         self.n_samples_alignment = 100
         self.n_samples_decoding = 150
-        self.n_features = 2000
+        self.n_features = 1876
 
     def generate_mock_data_subject(self):
         data_alignment = np.random.randn(
