@@ -18,13 +18,7 @@ class Dataset(BaseDataset):
     # the cross product for each key in the dictionary.
     # Any parameters 'param' defined here is available as `self.param`.
     parameters = {
-        "subjects": [("sub-01", "sub-02", "sub-03")],
         "target": ["sub-01", "sub-02", "sub-03"],
-        "n_samples_alignment": [100],
-        "n_samples_decoding": [150],
-        "n_features": [
-            1876,
-        ],
     }
 
     # List of packages needed to run the dataset. See the corresponding
@@ -33,17 +27,11 @@ class Dataset(BaseDataset):
 
     def __init__(
         self,
-        subjects,
-        target,
-        n_samples_alignment,
-        n_features,
-        n_samples_decoding,
     ):
-        self.subjects = subjects
-        self.target = target
-        self.n_samples_alignment = n_samples_alignment
-        self.n_samples_decoding = n_samples_decoding
-        self.n_features = n_features
+        self.subjects = ["sub-01", "sub-02", "sub-03"]
+        self.n_samples_alignment = 100
+        self.n_samples_decoding = 150
+        self.n_features = 2000
 
     def generate_mock_data_subject(self):
         data_alignment = np.random.randn(
