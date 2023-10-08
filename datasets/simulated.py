@@ -6,7 +6,7 @@ from benchopt import BaseDataset, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     import numpy as np
-    from nilearn import masking, maskers, datasets
+    from nilearn import maskers, datasets
 
 
 # All datasets must be named `Dataset` and inherit from `BaseDataset`
@@ -46,8 +46,12 @@ class Dataset(BaseDataset):
         self.n_features = n_features
 
     def generate_mock_data_subject(self):
-        data_alignment = np.random.randn(self.n_samples_alignment, self.n_features)
-        data_decoding = np.random.randn(self.n_samples_decoding, self.n_features)
+        data_alignment = np.random.randn(
+            self.n_samples_alignment, self.n_features
+        )
+        data_decoding = np.random.randn(
+            self.n_samples_decoding, self.n_features
+        )
         return data_alignment, data_decoding
 
     def generate_fake_labels(self):
@@ -73,8 +77,12 @@ class Dataset(BaseDataset):
                     data_decoding_target,
                 ) = self.generate_mock_data_subject()
                 # Convert the data to a brain volume using the masker.
-                data_alignment_target = mask.inverse_transform(data_alignment_target)
-                data_decoding_target = mask.inverse_transform(data_decoding_target)
+                data_alignment_target = mask.inverse_transform(
+                    data_alignment_target
+                )
+                data_decoding_target = mask.inverse_transform(
+                    data_decoding_target
+                )
                 # Generate pseudorandom labels using `numpy` for target subject
                 labels = self.generate_fake_labels()
                 dict_labels[subject] = labels
@@ -86,7 +94,9 @@ class Dataset(BaseDataset):
                     data_decoding,
                 ) = self.generate_mock_data_subject()
                 # Convert the data to a brain volume using the masker.
-                dict_alignment[subject] = mask.inverse_transform(data_alignment)
+                dict_alignment[subject] = mask.inverse_transform(
+                    data_alignment
+                )
                 dict_decoding[subject] = mask.inverse_transform(data_decoding)
                 labels = self.generate_fake_labels()
                 dict_labels[subject] = labels

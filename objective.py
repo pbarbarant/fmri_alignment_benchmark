@@ -5,9 +5,7 @@ from benchopt import BaseObjective, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     import warnings
-    import numpy as np
     from sklearn.svm import LinearSVC
-    from sklearn.preprocessing import StandardScaler
     from sklearn.exceptions import ConvergenceWarning
 
 warnings.filterwarnings("ignore", category=FutureWarning)

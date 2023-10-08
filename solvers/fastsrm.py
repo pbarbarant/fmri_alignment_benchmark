@@ -8,7 +8,6 @@ with safe_import_context() as import_ctx:
     from fastsrm.identifiable_srm import IdentifiableFastSRM
     import os
     import numpy as np
-    from joblib import Memory
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
 
@@ -81,7 +80,9 @@ class Solver(BaseSolver):
             self.mask.transform(contrasts).T
             for _, contrasts in self.dict_alignment.items()
         ]
-        alignment_array.append(self.mask.transform(self.data_alignment_target).T)
+        alignment_array.append(
+            self.mask.transform(self.data_alignment_target).T
+        )
         alignment_estimator = srm.fit(alignment_array)
 
         for subject in self.dict_alignment.keys():

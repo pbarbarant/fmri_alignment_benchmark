@@ -61,9 +61,7 @@ class Solver(BaseSolver):
         X_train = []
         y_train = []
         X_test = []
-        y_test = []
 
-        dict_alignment_estimators = dict()
         for subject in self.dict_alignment.keys():
             source_data = self.dict_alignment[subject]
 

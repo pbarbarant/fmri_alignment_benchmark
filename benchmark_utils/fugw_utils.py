@@ -41,8 +41,9 @@ class FugwAlignment:
         radius : int, optional
             Radius around the sampled points in mm, by default 5
         id_reg : bool, optional
-            Interpolate the resulting mapping with the identity matrix, by default False
-        """        
+            Interpolate the resulting mapping with the identity matrix,
+            by default False
+        """
         self.masker = masker
         self.method = method
         self.n_samples = int(n_samples)
@@ -93,7 +94,7 @@ class FugwAlignment:
             target_embeddings_normalized,
             target_distance_max,
         ) = coarse_to_fine.random_normalizing(target_geometry_embeddings)
-        
+
         # Normalize embeddings
         # source_embeddings_normalized /= self.degree
         # target_embeddings_normalized /= self.degree
@@ -128,7 +129,7 @@ class FugwAlignment:
 
         source_features = self.masker.transform(X)
         target_features = self.masker.transform(Y)
-        
+
         source_features_normalized = source_features / np.linalg.norm(
             source_features, axis=1
         ).reshape(-1, 1)
@@ -187,10 +188,13 @@ class FugwAlignment:
         """
 
         features = self.masker.transform(X)
-        
-        # If id_reg is True, interpolate the resulting mapping with the identity matrix
-        if self.id_reg==False:
-            transformed_features = self.mapping.transform(features)
+
+        # If id_reg is True, interpolate the resulting
+        # mapping with the identity matrix
+        if self.id_reg is True:
+            transformed_features = (
+                self.mapping.transform(features) + features
+            ) / 2
         else:
-            transformed_features = (self.mapping.transform(features) + features) / 2
+            transformed_features = self.mapping.transform(features)
         return self.masker.inverse_transform(transformed_features)

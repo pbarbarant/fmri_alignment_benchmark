@@ -56,7 +56,9 @@ class Dataset(BaseDataset):
             data_path / "derivatives" / f"{subject}_decode_{self.fold}.nii.gz"
         )
         labels = pd.read_csv(
-            data_path / "derivatives" / f"{subject}_decode_{self.fold}_labels.csv",
+            data_path
+            / "derivatives"
+            / f"{subject}_decode_{self.fold}_labels.csv",
             header=None,
         ).values.ravel()
         return alignment_contrasts, decoding_contrasts, labels
@@ -69,7 +71,9 @@ class Dataset(BaseDataset):
 
         # Create a masker to extract the data from the brain volume.
         masker_path = data_path / "derivatives" / "gm_resampled_mask.nii.gz"
-        connected_mask = masking.compute_background_mask(masker_path, connected=True)
+        connected_mask = masking.compute_background_mask(
+            masker_path, connected=True
+        )
         mask = maskers.NiftiMasker(connected_mask, memory=MEMORY).fit()
 
         dict_alignment = dict()

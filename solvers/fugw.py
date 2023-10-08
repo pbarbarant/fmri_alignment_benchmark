@@ -8,7 +8,6 @@ with safe_import_context() as import_ctx:
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.fugw_utils import FugwAlignment
     import numpy as np
-    from joblib import Memory
 
 
 # The benchmark solvers must be named `Solver` and
