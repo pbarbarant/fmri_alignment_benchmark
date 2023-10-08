@@ -38,7 +38,7 @@ class Dataset(BaseDataset):
     # section in objective.py
     requirements = ["nilearn", "pandas"]
 
-    def __init__(self, target):
+    def __init__(self):
         self.subjects = [
             "sub-01",
             "sub-04",
@@ -51,7 +51,6 @@ class Dataset(BaseDataset):
             "sub-13",
             "sub-14",
         ]
-        self.target = target
 
     def load_rsvp_trial(self, subject, data_path):
         alignment_contrasts = image.load_img(
