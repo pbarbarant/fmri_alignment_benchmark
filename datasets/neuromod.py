@@ -32,14 +32,13 @@ class Dataset(BaseDataset):
     # section in objective.py
     requirements = ["nilearn", "pandas"]
 
-    def __init__(self, target):
+    def __init__(self):
         self.subjects = [
             "sub-01",
             "sub-02",
             "sub-03",
             "sub-05",
         ]
-        self.target = target
 
     def load_neuromod(self, subject, data_path):
         alignment_contrasts = image.load_img(
