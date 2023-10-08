@@ -38,15 +38,13 @@ class Dataset(BaseDataset):
     # section in objective.py
     requirements = ["nilearn", "pandas"]
 
-    def __init__(self, target, fold):
+    def __init__(self):
         self.subjects = [
             "sub-CSI1",
             "sub-CSI2",
             "sub-CSI3",
             "sub-CSI4",
         ]
-        self.target = target
-        self.fold = fold
 
     def load_BOLD5000(self, subject, data_path):
         alignment_contrasts = image.load_img(
