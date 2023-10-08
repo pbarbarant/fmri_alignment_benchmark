@@ -62,7 +62,8 @@ class Dataset(BaseDataset):
         )
         labels = pd.read_csv(
             data_path / "mathlang_audio_trial" / "3mm" / f"{subject}_labels.csv",
-        ).values.ravel()[1:]
+            header=None,
+        ).values.ravel()
         return alignment_contrasts, decoding_contrasts, labels
 
     def get_data(self):
