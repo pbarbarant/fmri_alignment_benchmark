@@ -1,4 +1,5 @@
 from benchopt import BaseObjective, safe_import_context
+from sklearn.exceptions import ConvergenceWarning
 
 # Protect the import with `safe_import_context()`. This allows:
 # - skipping import to speed up autocompletion in CLI.
@@ -7,7 +8,6 @@ with safe_import_context() as import_ctx:
     import warnings
     import numpy as np
     from sklearn.svm import LinearSVC
-    from sklearn.exceptions import ConvergenceWarning
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
