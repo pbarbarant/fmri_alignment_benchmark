@@ -5,6 +5,7 @@ from benchopt import BaseObjective, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     import warnings
+    import numpy as np
     from sklearn.svm import LinearSVC
     from sklearn.exceptions import ConvergenceWarning
 
@@ -87,10 +88,16 @@ class Objective(BaseObjective):
             value=score,
         )
 
-    def get_one_result(self):
+    def get_one_solution(self):
         # Return one solution. The return value should be an object compatible
         # with `self.evaluate_result`. This is mainly for testing purposes.
-        return dict(dict_alignment_estimators={})
+        result = dict(
+            X_train=np.random.randn(10, 10),
+            y_train=np.random.randint(2, size=10),
+            X_test=np.random.randn(10, 10),
+            y_test=np.random.randint(2, size=10),
+        )
+        return result
 
     def get_objective(self):
         # Define the information to pass to each solver to run the benchmark.
