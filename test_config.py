@@ -11,15 +11,15 @@ def check_test_solver_install(solver_class):
     detecting the situation.
     """
     fmralign_solvers = [
-        'fastsrm',
-        'identity',
-        'ot',
-        'procrustes',
-        'ridge',
+        "fastsrm",
+        "identity",
+        "ot",
+        "procrustes",
+        "ridge",
     ]
 
     if solver_class.name.lower() in fmralign_solvers:
-        pytest.skip('fmralign solvers need to be installed from source')
+        pytest.skip("fmralign solvers need to be installed from source")
 
-    if solver_class.name.lower() == 'fugw':
-        pytest.skip('Latest version of fugw is not available on PyPI')
+    if solver_class.name.lower() == "fugw":
+        pytest.skip("Latest version of fugw is not available on PyPI")
