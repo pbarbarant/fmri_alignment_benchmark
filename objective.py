@@ -66,15 +66,11 @@ class Objective(BaseObjective):
         self.target = target
         self.mask = mask
 
-    def compute(self, result):
+    def evaluate_result(self, X_train, y_train, X_test, y_test):
         # The keyword arguments of this function are the keys of the
         # dictionary returned by `Solver.get_result`. This defines the
         # benchmark's API to pass solvers' result. This is customizable for
         # each benchmark.
-        X_train = result["X_train"]
-        y_train = result["y_train"]
-        X_test = result["X_test"]
-        y_test = result["y_test"]
 
         # Fit a linear SVM on the training data and evaluate the score on the
         # test data.
@@ -88,7 +84,7 @@ class Objective(BaseObjective):
             value=score,
         )
 
-    def get_one_solution(self):
+    def get_one_result(self):
         # Return one solution. The return value should be an object compatible
         # with `self.evaluate_result`. This is mainly for testing purposes.
         result = dict(
