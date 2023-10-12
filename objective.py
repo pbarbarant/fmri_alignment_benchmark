@@ -9,11 +9,6 @@ with safe_import_context() as import_ctx:
     from sklearn.svm import LinearSVC
     from sklearn.exceptions import ConvergenceWarning
 
-warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore", category=UserWarning)
-warnings.filterwarnings("ignore", category=ConvergenceWarning)
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-
 
 # The benchmark objective must be named `Objective` and
 # inherit from `BaseObjective` for `benchopt` to work properly.
@@ -47,6 +42,11 @@ class Objective(BaseObjective):
         "numpy",
         "joblib",
     ]
+
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    warnings.filterwarnings("ignore", category=UserWarning)
+    warnings.filterwarnings("ignore", category=ConvergenceWarning)
+    warnings.filterwarnings("ignore", category=RuntimeWarning)
 
     # Minimal version of benchopt required to run this benchmark.
     # Bump it up if the benchmark depends on a new feature of benchopt.
