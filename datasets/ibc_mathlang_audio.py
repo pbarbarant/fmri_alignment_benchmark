@@ -36,6 +36,7 @@ class Dataset(BaseDataset):
 
     # List of packages needed to run the dataset. See the corresponding
     # section in objective.py
+    install_cmd = "conda"
     requirements = ["nilearn", "pandas"]
 
     def __init__(self):

@@ -27,7 +27,8 @@ class Solver(BaseSolver):
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
-    requirements = ["fastsrm", "joblib"]
+    install_cmd = "conda"
+    requirements = ["pip:fastsrm", "joblib"]
 
     stopping_criterion = SingleRunCriterion()
 
