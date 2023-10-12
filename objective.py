@@ -4,7 +4,7 @@ from benchopt import BaseObjective, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
-    import warnings
+    # import warnings
     import numpy as np
     from sklearn.svm import LinearSVC
     # from sklearn.exceptions import ConvergenceWarning
