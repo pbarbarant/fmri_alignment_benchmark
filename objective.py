@@ -50,7 +50,7 @@ class Objective(BaseObjective):
 
     # Minimal version of benchopt required to run this benchmark.
     # Bump it up if the benchmark depends on a new feature of benchopt.
-    min_benchopt_version = "1.4"
+    min_benchopt_version = "1.5"
 
     def set_data(
         self,
