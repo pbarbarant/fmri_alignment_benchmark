@@ -5,7 +5,8 @@ from benchopt import BaseDataset, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
-    from benchmark_utils.config import DATA_PATH_IBC, MEMORY
+    from benchmark_utils.config import DATA_PATH_IBC_MATHLANG_AUDIO, MEMORY
+    from benchmark_utils.datasets_utils import load_dataset, load_mask
     from pathlib import Path
     from nilearn import masking, maskers, image
     import pandas as pd
@@ -53,44 +54,25 @@ class Dataset(BaseDataset):
             "sub-14",
         ]
 
-    def load_rsvp_trial(self, subject, data_path):
-        alignment_contrasts = image.load_img(
-            data_path / "alignment" / f"{subject}_53_contrasts.nii.gz"
-        )
-        decoding_contrasts = image.load_img(
-            data_path / "mathlang_audio_trial" / "3mm" / f"{subject}.nii.gz"
-        )
-        labels = pd.read_csv(
-            data_path
-            / "mathlang_audio_trial"
-            / "3mm"
-            / f"{subject}_labels.csv",
-            header=None,
-        ).values.ravel()
-        return alignment_contrasts, decoding_contrasts, labels
-
     def get_data(self):
         # The return arguments of this function are passed as keyword arguments
         # to `Objective.set_data`. This defines the benchmark's
         # API to pass data. It is customizable for each benchmark.
-        data_path = Path(DATA_PATH_IBC)
+        data_path = Path(DATA_PATH_IBC_MATHLANG_AUDIO)
 
-        # Create a masker to extract the data from the brain volume.
-        masker_path = data_path / "masks" / "gm_mask_3mm.nii.gz"
-        connected_mask = masking.compute_background_mask(
-            masker_path, connected=True
-        )
-        mask = maskers.NiftiMasker(connected_mask, memory=MEMORY).fit()
+        # Load the masker object
+        mask = load_mask(data_path, MEMORY)
 
         dict_alignment = dict()
         dict_decoding = dict()
         dict_labels = dict()
+
         for subject in self.subjects:
             (
                 alignment_contrasts,
                 decoding_contrasts,
                 labels,
-            ) = self.load_rsvp_trial(subject, data_path)
+            ) = load_dataset(subject, data_path, mask)
             dict_labels[subject] = labels
 
             if subject == self.target:
@@ -110,3 +92,4 @@ class Dataset(BaseDataset):
             target=self.target,
             mask=mask,
         )
+
