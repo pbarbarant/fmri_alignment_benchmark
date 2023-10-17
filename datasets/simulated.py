@@ -28,6 +28,7 @@ class Dataset(BaseDataset):
 
     def __init__(
         self,
+        target="sub-01",
     ):
         self.subjects = ["sub-01", "sub-02", "sub-03"]
         self.n_samples_alignment = 100

@@ -39,7 +39,7 @@ class Dataset(BaseDataset):
     install_cmd = "conda"
     requirements = ["nilearn", "pandas"]
 
-    def __init__(self):
+    def __init__(self, target="sub-01"):
         self.subjects = [
             "sub-01",
             "sub-04",
