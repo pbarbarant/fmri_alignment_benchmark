@@ -8,8 +8,6 @@ with safe_import_context() as import_ctx:
     from benchmark_utils.config import DATA_PATH_IBC_MATHLANG_AUDIO, MEMORY
     from benchmark_utils.datasets_utils import load_dataset, load_mask
     from pathlib import Path
-    from nilearn import masking, maskers, image
-    import pandas as pd
 
 
 # All datasets must be named `Dataset` and inherit from `BaseDataset`
@@ -92,4 +90,3 @@ class Dataset(BaseDataset):
             target=self.target,
             mask=mask,
         )
-

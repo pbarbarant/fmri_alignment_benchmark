@@ -7,6 +7,7 @@ with safe_import_context() as import_ctx:
     # import warnings
     import numpy as np
     from sklearn.svm import LinearSVC
+
     # from sklearn.exceptions import ConvergenceWarning
 
 
