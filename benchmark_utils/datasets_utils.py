@@ -1,24 +1,20 @@
-from nilearn import image, masking, maskers
-from pandas import pd
+import numpy as np
+import pandas as pd
+from nilearn import masking, maskers
+
 
 def load_dataset(subject, data_path, mask):
     alignment_contrasts = mask.inverse_transform(
-        image.load_img(
-            data_path / "alignment" / f"{subject}.npy"
-        )
+        np.load(data_path / "alignment" / f"{subject}.npy")
     )
     decoding_contrasts = mask.inverse_transform(
-        image.load_img(
-            data_path / "decoding" / f"{subject}.npy"
-        )
+        np.load(data_path / "decoding" / f"{subject}.npy")
     )
     labels = pd.read_csv(
-        data_path
-        / "labels"
-        / f"{subject}.csv",
+        data_path / "labels" / f"{subject}.csv",
         header=None,
     ).values.ravel()
-    
+
     return alignment_contrasts, decoding_contrasts, labels
 
 
