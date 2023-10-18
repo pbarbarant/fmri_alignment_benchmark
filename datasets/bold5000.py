@@ -6,9 +6,10 @@ from benchopt import BaseDataset, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     from benchmark_utils.config import DATA_PATH_BOLD5000, MEMORY
-    from benchmark_utils.datasets_utils import load_dataset, load_mask
+    from benchmark_utils.datasets_utils import load_mask
     from pathlib import Path
     from nilearn import masking, maskers, image
+    import numpy as np
     import pandas as pd
 
 
@@ -48,6 +49,20 @@ class Dataset(BaseDataset):
             "sub-CSI4",
         ]
 
+    def load_bold5000(self, subject, fold, data_path, mask):
+        alignment_contrasts = mask.inverse_transform(
+            np.load(data_path / "alignment" / f"{subject}.npy")
+        )
+        decoding_contrasts = mask.inverse_transform(
+            np.load(data_path / "decoding" / f"{subject}_{fold}.npy")
+        )
+        labels = pd.read_csv(
+            data_path / "labels" / f"{subject}_{fold}.csv",
+            header=None,
+        ).values.ravel()
+
+        return alignment_contrasts, decoding_contrasts, labels
+
     def get_data(self):
         # The return arguments of this function are passed as keyword arguments
         # to `Objective.set_data`. This defines the benchmark's
@@ -66,7 +81,7 @@ class Dataset(BaseDataset):
                 alignment_contrasts,
                 decoding_contrasts,
                 labels,
-            ) = load_dataset(f"{subject}_decode_{self.fold}", data_path, mask)
+            ) = self.load_bold5000(subject, self.fold, data_path, mask)
             dict_labels[subject] = labels
 
             if subject == self.target:
