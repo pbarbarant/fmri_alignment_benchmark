@@ -17,22 +17,20 @@ data_path = Path.cwd().parent / "outputs"
 file_list = glob.glob(os.path.join(data_path, "*.parquet"))
 latest_file = max(file_list, key=os.path.getmtime)
 df = pd.read_parquet(latest_file)
-
 # Filter out usless data
 df = df[["solver_name", "objective_value", "data_name", "time"]]
-df["data_name"] = df["data_name"].str.replace(r"\[.*?\]", "", regex=True)
-
 # Remove datasets that are not used
-df.drop(df[df["data_name"] == "Simulated"].index, inplace=True)
-df.drop(df[df["data_name"] == "Forrest"].index, inplace=True)
+df.drop(df[df["data_name"].str.contains("Simulated")].index, inplace=True)
 # df.drop(df[df['data_name'] == 'BOLD5000'].index, inplace=True)
+
 # compute the mean and std of the objective value for each solver
 df2 = df.groupby(["solver_name", "data_name"]).agg(
     {"objective_value": ["mean", "std"], "time": ["mean", "std"]}
 )
 df2.columns = ["_".join(x) for x in df2.columns.ravel()]
 df2.reset_index(inplace=True)
-df2.drop(df2[~df2["solver_name"].str.contains("identity")].index, inplace=True)
+df2.drop(df2[~df2["solver_name"].str.contains("identity")].index,
+inplace=True)
 df2 = df2[
     [
         "data_name",
@@ -55,47 +53,43 @@ df = df.drop(
     ]
 )
 df["objective_value"] *= 100
+df["data_name"] = df["data_name"].str.replace(r"\[.*?\]", "", regex=True)
 
 # Drop identity
 df.drop(df[df["solver_name"].str.contains("identity")].index, inplace=True)
 
 # %%
 # seaborn box plot
-plt.figure(figsize=(5, 5))
+plt.figure(figsize=(5, 7))
 sns.set_theme(style="ticks", palette="pastel")
 plt.rcParams["figure.dpi"] = 500
 ax1 = sns.boxplot(
     data=df,
     x="objective_value",
-    y="solver_name",
+    y="data_name",
+    hue="solver_name",
     color="white",
     showfliers=False,
-    # showmeans=False,
+    # showmeans=True,
 )
 sns.stripplot(
     x="objective_value",
-    y="solver_name",
+    y="data_name",
     data=df,
     size=4,
-    hue="data_name",
+    hue="solver_name",
     dodge=True,
-    jitter=False,
+    jitter=True,
     palette="tab10",
 )
 ax1.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-plt.xlabel("Accuracy gain")
-plt.ylabel("Solver")
-plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
+plt.xlabel("Per subject accuracy gain (relative to anatomical)")
+plt.ylabel("Dataset")
+plt.legend(title="Solver", loc="center left", bbox_to_anchor=(1, 0.5))
 
-solvers = [
-    "FUGW (ours)",
-    "FastSRM",
-    "Piecewise optimal transport",
-    "Piecewise Procrustes",
-    "Piecewise ridge regression",
-]
+solvers = df["solver_name"].unique()
 # Fill with grey rectangles
-for i in range(len(solvers)):
+for i in range(len(df["data_name"].unique())):
     ax1.add_patch(
         plt.Rectangle(
             (-20, i - 0.5),
@@ -106,23 +100,24 @@ for i in range(len(solvers)):
             alpha=0.1 * (1 - i % 2),
         )
     )
-for x in np.arange(-20, 20, 5):
-    if x == 0:
-        plt.axvline(x=x, color="black", alpha=0.5, linestyle="-")
+for x in np.arange(-100, 100, 2.5):
+    if x==0:
+        plt.axvline(x=x, color="black", alpha=0.7, linestyle="-")
     else:
         plt.axvline(x=x, color="black", alpha=0.2, linestyle="--")
 # plt.yticks(
 #     np.arange(len(solvers)),
 #     [
 #         "FUGW (ours)",
-#         "FastSRM",
-#         "Piecewise\noptimal transport",
+#         # "FastSRM",
+#         "Anatomical",
+#         # "Piecewise\noptimal transport",
 #         "Piecewise\nProcrustes",
 #         "Piecewise\nridge regression",
 #     ],
 # )
-plt.title("Prediction accuracy gain over all target subjects\n")
-plt.xlim(-20, 20)
+plt.title("Prediction accuracy over all target subjects\n")
+plt.xlim(-10, 10)
 plt.savefig("../outputs/figures/accuracy_gain.png", bbox_inches="tight")
 plt.show()
 
@@ -133,26 +128,27 @@ sns.set_theme(style="ticks", palette="pastel")
 plt.rcParams["figure.dpi"] = 500
 ax1 = sns.boxplot(
     data=df,
-    x="time",
-    y="solver_name",
+    x="objective_value",
+    y="data_name",
+    hue="solver_name",
     color="white",
     showfliers=False,
-    # showmeans=False,
+    # showmeans=True,
 )
 sns.stripplot(
-    x="time",
-    y="solver_name",
+    x="objective_value",
+    y="data_name",
     data=df,
     size=4,
-    hue="data_name",
+    hue="solver_name",
     dodge=True,
-    jitter=False,
+    jitter=True,
     palette="tab10",
 )
 plt.xlabel("Time factor (relative to anatomical)")
 ax1.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=0, symbol="x"))
-plt.ylabel("Solver")
-plt.legend(title="Dataset", loc="center left", bbox_to_anchor=(1, 0.5))
+plt.ylabel("Dataset")
+plt.legend(title="Solver", loc="center left", bbox_to_anchor=(1, 0.5))
 
 solvers = [
     "FUGW (ours)",
