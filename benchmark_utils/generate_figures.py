@@ -50,7 +50,7 @@ df = df.drop(
 )
 df["objective_value"] *= 100
 df["data_name"] = df["data_name"].str.replace(r"\[.*?\]", "", regex=True)
-df["solver_name"] = df["solver_name"].str.replace(r"\[.*?\]", "", regex=True)
+# df["solver_name"] = df["solver_name"].str.replace(r"\[.*?\]", "", regex=True)
 
 # Drop anatomical alignment
 df.drop(df[df["solver_name"].str.contains("identity")].index, inplace=True)
