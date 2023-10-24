@@ -21,12 +21,13 @@ class Solver(BaseSolver):
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
         # "n_samples": [1e4],
-        "alpha_coarse": [0.5],
-        "alpha_fine": [0.5],
+        "alpha_coarse": [0.3, 0.5, 0.7, 0.9],
+        "alpha_fine": [0.3, 0.5, 0.7, 0.9],
         # "rho": [1.0],
-        # "eps": [1e-6],
+        "eps_coarse": [1e-6, 1e-4, 1e-2],
+        "eps_fine": [1e-6, 1e-4, 1e-2],
         # "radius": [8],
-        # "id_reg": [False, True],
+        "id_reg": [False, True],
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -76,12 +77,12 @@ class Solver(BaseSolver):
                 n_samples=1e3,
                 alpha_coarse=self.alpha_coarse,
                 rho_coarse=1,
-                eps_coarse=1e-6,
+                eps_coarse=self.eps_coarse,
                 alpha_fine=self.alpha_fine,
                 rho_fine=1e-2,
-                eps_fine=1e-6,
+                eps_fine=self.eps_fine,
                 radius=8,
-                id_reg=True,
+                id_reg=self.id_reg,
             ).fit(source_data, self.data_alignment_target)
             data_decoding = self.dict_decoding[subject]
             aligned_data = alignment_estimator.transform(data_decoding)
