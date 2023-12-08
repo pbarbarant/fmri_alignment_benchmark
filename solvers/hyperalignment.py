@@ -5,11 +5,12 @@ from benchopt import BaseSolver, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     from benchopt.stopping_criterion import SingleRunCriterion
-    from hyperalignment.individualized_neural_tuning import INT as HyperAlignment
     import os
     import numpy as np
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
+    from hyperalignment.individualized_neural_tuning import INT as HyperAlignment
+    from hyperalignment.searchlight import compute_searchlights
 
 
 # The benchmark solvers must be named `Solver` and
@@ -22,7 +23,7 @@ class Solver(BaseSolver):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        "n_components": [50],
+        "n_jobs": [-1],
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -69,8 +70,6 @@ class Solver(BaseSolver):
             os.makedirs(srm_path)
 
         ha = HyperAlignment(
-            tmpl_kind="pca",
-            latent_dim=self.n_components,
             n_jobs=-1,
         )
 
@@ -78,10 +77,22 @@ class Solver(BaseSolver):
             self.mask.transform(contrasts)
             for _, contrasts in self.dict_alignment.items()
         ]
+
+        # We get one of the niimg to compute the searchlights.
+        base_niimg = list(self.dict_alignment.items())[0][1]
+
         alignment_array.append(self.mask.transform(self.data_alignment_target))
 
         alignment_array = np.array(alignment_array)
-        alignment_estimator = ha.fit(alignment_array)
+
+        _, searchlights, dists = compute_searchlights(
+            niimg=base_niimg,
+            mask_img=self.mask.mask_img_,
+        )
+
+        alignment_estimator = ha.fit(
+            X_train=alignment_array, searchlights=searchlights, dists=dists
+        )
 
         data_decoding_li = []
 

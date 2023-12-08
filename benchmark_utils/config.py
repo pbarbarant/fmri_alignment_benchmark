@@ -1,8 +1,6 @@
 from pathlib import Path
 
-root = Path(
-    "/data/parietal/store3/work/pbarbara/datasets/fmralign_benchopt_data"
-)
+root = Path("/storage/store2/work/dfouchar/fmralign_benchopt_data/")
 
 # path to IBC RSVP data
 DATA_PATH_IBC_RSVP = root / "IBC_RSVP"
@@ -20,4 +18,4 @@ DATA_PATH_NEUROMOD = root / "Neuromod"
 DATA_PATH_BOLD5000 = root / "BOLD5000"
 
 # path to memory
-MEMORY = "/data/parietal/store3/work/pbarbara/tmp"
+MEMORY = "/storage/store2/work/dfouchar/tmp"
