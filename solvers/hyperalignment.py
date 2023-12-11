@@ -91,7 +91,7 @@ class Solver(BaseSolver):
         )
 
         alignment_estimator = ha.fit(
-            X_train=alignment_array, searchlights=searchlights, dists=dists
+            X_train=alignment_array, searchlights=searchlights, dists=dists, verbose=1
         )
 
         data_decoding_li = []
@@ -112,7 +112,7 @@ class Solver(BaseSolver):
         # Align the test data
         X_test = self.mask.transform(self.data_decoding_target)
         X_test = np.array([X_test])
-        X_test = alignment_estimator.transform(X_test)
+        X_test = alignment_estimator.transform(X_test, verbose=1)
 
         # Standard scaling
         se = StandardScaler()
