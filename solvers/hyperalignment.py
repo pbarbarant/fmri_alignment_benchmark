@@ -65,12 +65,12 @@ class Solver(BaseSolver):
         y_train = []
         X_test = []
 
-        srm_path = os.path.join(MEMORY, "hyperalignment")
-        if not os.path.exists(srm_path):
-            os.makedirs(srm_path)
+        ha_path = os.path.join(MEMORY, "hyperalignment")
+        if not os.path.exists(ha_path):
+            os.makedirs(ha_path)
 
         ha = HyperAlignment(
-            n_jobs=-1,
+            n_jobs=70,
         )
 
         alignment_array = [
@@ -91,7 +91,14 @@ class Solver(BaseSolver):
         )
 
         alignment_estimator = ha.fit(
+<<<<<<< HEAD
             X_train=alignment_array, searchlights=searchlights, dists=dists, verbose=1
+=======
+            X_train=alignment_array,
+            searchlights=searchlights,
+            dists=dists,
+            verbose=True,
+>>>>>>> 9d02e46769f45a693ca94c0303b5f97ed8047722
         )
 
         data_decoding_li = []
@@ -104,7 +111,7 @@ class Solver(BaseSolver):
             y_train.append(labels)
 
         data_decoding = self.dict_decoding[subject]
-        X_train = alignment_estimator.transform(data_decoding)
+        X_train = alignment_estimator.transform(data_decoding, verbose=True)
 
         data_decoding = np.array(data_decoding_li)
         self.y_train = np.hstack(y_train).ravel()
