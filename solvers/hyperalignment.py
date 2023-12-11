@@ -84,6 +84,7 @@ class Solver(BaseSolver):
         alignment_array.append(self.mask.transform(self.data_alignment_target))
 
         alignment_array = np.array(alignment_array)
+        print("Shape of the data : ", alignment_array.shape)
 
         _, searchlights, dists = compute_searchlights(
             niimg=base_niimg,
@@ -104,6 +105,9 @@ class Solver(BaseSolver):
             y_train.append(labels)
 
         data_decoding = self.dict_decoding[subject]
+        data_decoding = self.mask.transform(data_decoding)
+        data_decoding = np.array([data_decoding])
+
         X_train = alignment_estimator.transform(data_decoding, verbose=True)
 
         data_decoding = np.array(data_decoding_li)
