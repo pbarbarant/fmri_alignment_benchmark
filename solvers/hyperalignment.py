@@ -91,14 +91,7 @@ class Solver(BaseSolver):
         )
 
         alignment_estimator = ha.fit(
-<<<<<<< HEAD
             X_train=alignment_array, searchlights=searchlights, dists=dists, verbose=1
-=======
-            X_train=alignment_array,
-            searchlights=searchlights,
-            dists=dists,
-            verbose=True,
->>>>>>> 9d02e46769f45a693ca94c0303b5f97ed8047722
         )
 
         data_decoding_li = []

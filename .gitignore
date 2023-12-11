@@ -18,3 +18,4 @@ benchopt.ini
 coverage.xml
 benchmark_utils/config.py
 benchmark_utils/config.py
+benchmark_utils/config.py
