@@ -9,7 +9,7 @@ with safe_import_context() as import_ctx:
     import numpy as np
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
-    from hyperalignment.individualized_neural_tuning import INT as HyperAlignment
+    from hyperalignment.fast_int import INT as HyperAlignment
     from hyperalignment.searchlight import compute_searchlights
 
 
@@ -17,7 +17,7 @@ with safe_import_context() as import_ctx:
 # inherit from `BaseSolver` for `benchopt` to work properly.
 class Solver(BaseSolver):
     # Name to select the solver in the CLI and to display the results.
-    name = "hyperalignment"
+    name = "fast_int"
 
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -67,29 +67,19 @@ class Solver(BaseSolver):
         if not os.path.exists(ha_path):
             os.makedirs(ha_path)
 
-        ha = HyperAlignment(n_jobs=5, id="IBC_Sound", cache=False)
+        ha = HyperAlignment(n_jobs=5)
 
         alignment_array = [
             self.mask.transform(contrasts)
             for _, contrasts in self.dict_alignment.items()
         ]
 
-        # We get one of the niimg to compute the searchlights.
-        base_niimg = list(self.dict_alignment.items())[0][1]
-
         alignment_array.append(self.mask.transform(self.data_alignment_target))
 
         alignment_array = np.array(alignment_array)
         print("Shape of the data : ", alignment_array.shape)
 
-        _, searchlights, dists = compute_searchlights(
-            niimg=base_niimg,
-            mask_img=self.mask.mask_img_,
-        )
-
-        alignment_estimator = ha.fit(
-            X_train=alignment_array, searchlights=searchlights, dists=dists, verbose=1
-        )
+        alignment_estimator = ha.fit(X_train=alignment_array, verbose=1)
 
         data_decoding_li = []
 
