@@ -70,7 +70,8 @@ class Solver(BaseSolver):
             os.makedirs(ha_path)
 
         ha = HyperAlignment(
-            n_jobs=70,
+            n_jobs=5,
+            id="IBC_Sound",
         )
 
         alignment_array = [
