@@ -10,7 +10,6 @@ with safe_import_context() as import_ctx:
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
     from hyperalignment.fast_int import INT as HyperAlignment
-    from hyperalignment.searchlight import compute_searchlights
 
 
 # The benchmark solvers must be named `Solver` and
@@ -79,7 +78,7 @@ class Solver(BaseSolver):
         alignment_array = np.array(alignment_array)
         print("Shape of the data : ", alignment_array.shape)
 
-        alignment_estimator = ha.fit(X_train=alignment_array, verbose=1)
+        alignment_estimator = ha.fit(X_train=alignment_array)
 
         data_decoding_li = []
 
@@ -94,7 +93,7 @@ class Solver(BaseSolver):
         data_decoding = self.mask.transform(data_decoding)
         data_decoding = np.array([data_decoding])
 
-        X_train = alignment_estimator.transform(data_decoding, verbose=True)
+        X_train = alignment_estimator.transform(data_decoding)
 
         data_decoding = np.array(data_decoding_li)
         self.y_train = np.hstack(y_train).ravel()
@@ -102,7 +101,7 @@ class Solver(BaseSolver):
         # Align the test data
         X_test = self.mask.transform(self.data_decoding_target)
         X_test = np.array([X_test])
-        X_test = alignment_estimator.transform(X_test, verbose=1)
+        X_test = alignment_estimator.transform(X_test)
 
         # Standard scaling
         se = StandardScaler()

@@ -19,3 +19,4 @@ coverage.xml
 benchmark_utils/config.py
 benchmark_utils/config.py
 benchmark_utils/config.py
+solvers/toy_model.py
