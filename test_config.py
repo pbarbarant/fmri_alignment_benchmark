@@ -16,6 +16,8 @@ def check_test_solver_install(solver_class):
         "ot",
         "procrustes",
         "ridge",
+        "HyperAlignment",
+        "FastINT",
     ]
 
     if solver_class.name.lower() in fmralign_solvers:

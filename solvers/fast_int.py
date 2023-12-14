@@ -16,7 +16,7 @@ with safe_import_context() as import_ctx:
 # inherit from `BaseSolver` for `benchopt` to work properly.
 class Solver(BaseSolver):
     # Name to select the solver in the CLI and to display the results.
-    name = "fast_int"
+    name = "FastINT"
 
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -62,46 +62,44 @@ class Solver(BaseSolver):
         y_train = []
         X_test = []
 
-        ha_path = os.path.join(MEMORY, "hyperalignment")
-        if not os.path.exists(ha_path):
-            os.makedirs(ha_path)
+        fast_int_path = os.path.join(MEMORY, "fastint")
+        if not os.path.exists(fast_int_path):
+            os.makedirs(fast_int_path)
 
-        ha = HyperAlignment(n_jobs=5)
+        fast_int = HyperAlignment(n_jobs=5)
 
+        # Build alignment array
         alignment_array = [
             self.mask.transform(contrasts)
             for _, contrasts in self.dict_alignment.items()
         ]
 
         alignment_array.append(self.mask.transform(self.data_alignment_target))
-
         alignment_array = np.array(alignment_array)
-        print("Shape of the data : ", alignment_array.shape)
 
-        alignment_estimator = ha.fit(X_train=alignment_array)
+        # Compute the projected data into the common space (tunning matrices) for alignment data
+        alignment_estimator = fast_int.fit(X_train=alignment_array)
+        X_train = alignment_estimator.get_tunning_matrices()
+        X_train = np.vstack(X_train)
 
-        data_decoding_li = []
+        decoding_array = []
 
+        # Compute the projected data into the common space (tunning matrices) for decoding data
         for subject in self.dict_alignment.keys():
             data_decoding = self.dict_decoding[subject]
             masked_data_decoding = self.mask.transform(data_decoding)
-            data_decoding_li.append(masked_data_decoding)
+            decoding_array.append(masked_data_decoding)
             labels = self.dict_labels[subject]
             y_train.append(labels)
 
-        data_decoding = self.dict_decoding[subject]
-        data_decoding = self.mask.transform(data_decoding)
-        data_decoding = np.array([data_decoding])
-
-        X_train = alignment_estimator.transform(data_decoding)
-
-        data_decoding = np.array(data_decoding_li)
+        decoding_array.append(self.mask.transform(self.data_decoding_target))
+        decoding_array = np.array(decoding_array)
         self.y_train = np.hstack(y_train).ravel()
 
         # Align the test data
-        X_test = self.mask.transform(self.data_decoding_target)
-        X_test = np.array([X_test])
-        X_test = alignment_estimator.transform(X_test)
+        X_test = alignment_estimator.fit(decoding_array).get_tunning_matrices()[
+            -1
+        ]  # get only the decoding target data
 
         # Standard scaling
         se = StandardScaler()

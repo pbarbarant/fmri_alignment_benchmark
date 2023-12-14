@@ -3,6 +3,8 @@ fMRI Alignment Benchmark
 =====================
 |Build Status| |Python 3.11+|
 
+
+
 Benchopt is a package to simplify and make more transparent and
 reproducible the comparisons of optimization algorithms.
 This benchmark is dedicated to the resolution of the functional brain alignment problem.
@@ -16,6 +18,7 @@ We benchmark the following methods:
 * FastSRM
 * Optimal Transport
 * FUGW
+* Hyperalignment/INT
 
 on five different datasets:
 
