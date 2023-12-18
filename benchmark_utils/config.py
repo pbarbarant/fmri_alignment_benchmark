@@ -6,6 +6,11 @@ if gethostname().startswith("drago"):  # drago* machine
     # path to memory
     MEMORY = "/storage/store2/work/dfouchar/tmp"
 
+elif gethostname().startswith("mar"):  # margaret machine
+    root = Path("/data/parietal/store2/work/dfouchar/fmralign_benchopt_data/")
+    # path to memory
+    MEMORY = "/data/parietal/store2/work/dfouchar/tmp"
+
 else:  # local machine
     root = Path("/Users/df/datasets")
     # path to memory

@@ -67,7 +67,7 @@ class Solver(BaseSolver):
         if not os.path.exists(ha_path):
             os.makedirs(ha_path)
 
-        ha = HyperAlignment(n_jobs=1, cache=False)
+        ha = HyperAlignment(n_jobs=5, id="IBC_Sound")
 
         # Build alignment array
         alignment_array = [
