@@ -10,14 +10,14 @@ with safe_import_context() as import_ctx:
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
     from hyperalignment.individualized_neural_tuning import INT as HyperAlignment
-    from hyperalignment.searchlight import compute_searchlights
+    from hyperalignment.parcellation import compute_parcels
 
 
 # The benchmark solvers must be named `Solver` and
 # inherit from `BaseSolver` for `benchopt` to work properly.
 class Solver(BaseSolver):
     # Name to select the solver in the CLI and to display the results.
-    name = "HyperAlignment"
+    name = "PCHA"
 
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -67,7 +67,12 @@ class Solver(BaseSolver):
         if not os.path.exists(ha_path):
             os.makedirs(ha_path)
 
-        ha = HyperAlignment(n_jobs=5, id="IBC_Sound")
+        ha = HyperAlignment(
+            n_jobs=20,
+            alignment_method="parcel",
+            cache=False,
+            latent_dim=50,
+        )
 
         # Build alignment array
         alignment_array = [
@@ -80,18 +85,11 @@ class Solver(BaseSolver):
 
         # Searchlights computation
         base_niimg = list(self.dict_alignment.items())[0][1]
-        _, searchlights, dists = compute_searchlights(
-            niimg=base_niimg,
-            mask_img=self.mask.mask_img_,
-        )
+        parcels = compute_parcels(base_niimg, mask=self.mask, n_parcels=1000)
 
         # Compute the projected data into the common space (tunning matrices) for alignment data
-        alignment_estimator = ha.fit(
-            X_train=alignment_array, searchlights=searchlights, dists=dists
-        )
-        X_train = alignment_estimator.get_tuning_matrices()
-        X_train = np.vstack(X_train)
-
+        alignment_estimator = ha.fit(X_train=alignment_array, parcels=parcels)
+        T_alignment = alignment_estimator.get_tuning_matrices()
         decoding_array = []
 
         # Compute the projected data into the common space (tunning matrices) for decoding data
@@ -104,13 +102,32 @@ class Solver(BaseSolver):
 
         decoding_array.append(self.mask.transform(self.data_decoding_target))
         decoding_array = np.array(decoding_array)
+        alignment_estimator.fit(decoding_array, parcels=parcels)
+
+        decoding_stimulus = alignment_estimator.get_shared_stimulus()
+        X_train = [decoding_stimulus @ T for T in T_alignment[:-1]]
+        X_train = np.vstack(X_train)
         self.y_train = np.hstack(y_train).ravel()
 
         # Align the test data
-        alignment_estimator.fit(decoding_array, searchlights=searchlights, dists=dists)
-        X_test = alignment_estimator.get_tuning_matrices()[
-            -1
-        ]  # get only the decoding target data
+        X_test = [decoding_stimulus @ T_alignment[-1]]
+        # get only the decoding target data
+        X_test = np.vstack(X_test)
+
+        # PCA
+        from sklearn.decomposition import PCA
+
+        pca = PCA(n_components=500)
+        X_train = pca.fit_transform(X_train)
+        X_test = pca.transform(X_test)
+
+        # Remove unecrssary data from memory
+        del alignment_array
+        del decoding_array
+        del decoding_stimulus
+        del T_alignment
+        del parcels
+        del alignment_estimator
 
         # Standard scaling
         se = StandardScaler()

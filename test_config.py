@@ -16,7 +16,8 @@ def check_test_solver_install(solver_class):
         "ot",
         "procrustes",
         "ridge",
-        "HyperAlignment",
+        "PCHA",
+        "SLHA",
         "FastINT",
     ]
 

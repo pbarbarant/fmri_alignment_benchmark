@@ -9,14 +9,15 @@ with safe_import_context() as import_ctx:
     import numpy as np
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
-    from hyperalignment.fast_int import INT as HyperAlignment
+    from hyperalignment.individualized_neural_tuning import INT as HyperAlignment
+    from hyperalignment.searchlight import compute_searchlights
 
 
 # The benchmark solvers must be named `Solver` and
 # inherit from `BaseSolver` for `benchopt` to work properly.
 class Solver(BaseSolver):
     # Name to select the solver in the CLI and to display the results.
-    name = "FastINT"
+    name = "SLHA"
 
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -62,11 +63,16 @@ class Solver(BaseSolver):
         y_train = []
         X_test = []
 
-        fast_int_path = os.path.join(MEMORY, "fastint")
-        if not os.path.exists(fast_int_path):
-            os.makedirs(fast_int_path)
+        ha_path = os.path.join(MEMORY, "hyperalignment")
+        if not os.path.exists(ha_path):
+            os.makedirs(ha_path)
 
-        fast_int = HyperAlignment(n_jobs=5)
+        ha = HyperAlignment(
+            n_jobs=20,
+            alignment_method="searchlight",
+            cache=False,
+            latent_dim=50,
+        )
 
         # Build alignment array
         alignment_array = [
@@ -77,8 +83,17 @@ class Solver(BaseSolver):
         alignment_array.append(self.mask.transform(self.data_alignment_target))
         alignment_array = np.array(alignment_array)
 
+        # Searchlights computation
+        base_niimg = list(self.dict_alignment.items())[0][1]
+        _, searchlights, dists = compute_searchlights(
+            niimg=base_niimg,
+            mask_img=self.mask.mask_img_,
+        )
+
         # Compute the projected data into the common space (tunning matrices) for alignment data
-        alignment_estimator = fast_int.fit(X_train=alignment_array)
+        alignment_estimator = ha.fit(
+            X_train=alignment_array, searchlights=searchlights, dists=dists
+        )
         T_alignment = alignment_estimator.get_tuning_matrices()
         decoding_array = []
 
@@ -92,7 +107,7 @@ class Solver(BaseSolver):
 
         decoding_array.append(self.mask.transform(self.data_decoding_target))
         decoding_array = np.array(decoding_array)
-        alignment_estimator.fit(decoding_array)
+        alignment_estimator.fit(decoding_array, searchlights=searchlights, dists=dists)
 
         decoding_stimulus = alignment_estimator.get_shared_stimulus()
         X_train = [decoding_stimulus @ T for T in T_alignment[:-1]]
