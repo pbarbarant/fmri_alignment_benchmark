@@ -21,11 +21,11 @@ class Solver(BaseSolver):
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
         # "n_samples": [1e4],
-        "alpha_coarse": [0.3, 0.5, 0.7, 0.9],
-        "alpha_fine": [0.3, 0.5, 0.7, 0.9],
+        "alpha_coarse": [0.5, 0.75],
+        "alpha_fine": [0.5, 0.75],
         # "rho": [1.0],
-        "eps_coarse": [1e-6, 1e-4, 1e-2],
-        "eps_fine": [1e-6, 1e-4, 1e-2],
+        "eps_coarse": [1e-6],
+        "eps_fine": [1e-6],
         # "radius": [8],
         "id_reg": [False, True],
     }
