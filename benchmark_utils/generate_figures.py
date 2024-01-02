@@ -28,8 +28,7 @@ df2 = df.groupby(["solver_name", "data_name"]).agg(
 )
 df2.columns = ["_".join(x) for x in df2.columns.ravel()]
 df2.reset_index(inplace=True)
-df2.drop(df2[~df2["solver_name"].str.contains("identity")].index,
-inplace=True)
+df2.drop(df2[~df2["solver_name"].str.contains("identity")].index, inplace=True)
 df2 = df2[
     [
         "data_name",
@@ -87,7 +86,13 @@ plt.ylabel("Dataset")
 plt.gca().legend_.remove()
 # Manually add a legend for the stripplot
 handles, labels = plt.gca().get_legend_handles_labels()
-plt.legend(handles[-len(handles)//2:], labels[-len(labels)//2:], title="Solver", loc="center left", bbox_to_anchor=(1, 0.5))
+plt.legend(
+    handles[-len(handles) // 2 :],
+    labels[-len(labels) // 2 :],
+    title="Solver",
+    loc="center left",
+    bbox_to_anchor=(1, 0.5),
+)
 
 solvers = df["solver_name"].unique()
 # Fill with grey rectangles
@@ -103,7 +108,7 @@ for i in range(len(df["data_name"].unique())):
         )
     )
 for x in np.arange(-100, 100, 2.5):
-    if x==0:
+    if x == 0:
         plt.axvline(x=x, color="black", alpha=0.7, linestyle="-")
     else:
         plt.axvline(x=x, color="black", alpha=0.2, linestyle="--")
@@ -155,7 +160,13 @@ plt.ylabel("Dataset")
 plt.gca().legend_.remove()
 # Manually add a legend for the stripplot
 handles, labels = plt.gca().get_legend_handles_labels()
-plt.legend(handles[-len(handles)//2:], labels[-len(labels)//2:], title="Solver", loc="center left", bbox_to_anchor=(1, 0.5))
+plt.legend(
+    handles[-len(handles) // 2 :],
+    labels[-len(labels) // 2 :],
+    title="Solver",
+    loc="center left",
+    bbox_to_anchor=(1, 0.5),
+)
 
 solvers = [
     "FUGW (ours)",

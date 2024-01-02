@@ -6,13 +6,13 @@ if gethostname().startswith("drago"):  # drago* machine
     # path to memory
     MEMORY = "/storage/store2/work/dfouchar/tmp"
 
-elif gethostname().startswith("mar"):  # margaret machine
+elif gethostname().startswith("mar"):  # margaret node
     root = Path("/data/parietal/store2/work/dfouchar/fmralign_benchopt_data/")
     # path to memory
     MEMORY = "/data/parietal/store2/work/dfouchar/tmp"
 
 else:  # local machine
-    root = Path("/Users/df/datasets")
+    root = Path("/Users/df/datasets")  # Replace with your own path
     # path to memory
     MEMORY = "/Users/df/tmp"
 
