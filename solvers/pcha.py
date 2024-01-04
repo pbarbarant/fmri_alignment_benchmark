@@ -9,7 +9,10 @@ with safe_import_context() as import_ctx:
     import numpy as np
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
-    from hyperalignment.individualized_neural_tuning import INT as HyperAlignment
+    from sklearn.decomposition import PCA
+    from hyperalignment.individualized_neural_tuning import (
+        INT as HyperAlignment,
+    )
     from hyperalignment.parcellation import compute_parcels
 
 
@@ -22,7 +25,11 @@ class Solver(BaseSolver):
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
-    parameters = {}
+    parameters = {
+        "pca_components": [1000],
+        "latent_dim": [50],
+        "n_parcels": [1000],
+    }
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
@@ -71,7 +78,7 @@ class Solver(BaseSolver):
             n_jobs=20,
             alignment_method="parcel",
             cache=False,
-            latent_dim=50,
+            latent_dim=self.latent_dim,
         )
 
         # Build alignment array
@@ -85,14 +92,18 @@ class Solver(BaseSolver):
 
         # Searchlights computation
         base_niimg = list(self.dict_alignment.items())[0][1]
-        parcels = compute_parcels(base_niimg, mask=self.mask, n_parcels=1000)
+        parcels = compute_parcels(
+            base_niimg, mask=self.mask, n_parcels=self.n_parcels
+        )
 
-        # Compute the projected data into the common space (tunning matrices) for alignment data
+        # Compute the projected data into the common space (tuning matrices)
+        # for alignment data
         alignment_estimator = ha.fit(X_train=alignment_array, parcels=parcels)
         T_alignment = alignment_estimator.get_tuning_matrices()
         decoding_array = []
 
-        # Compute the projected data into the common space (tunning matrices) for decoding data
+        # Compute the projected data into the common space (tuning matrices)
+        # for decoding data
         for subject in self.dict_alignment.keys():
             data_decoding = self.dict_decoding[subject]
             masked_data_decoding = self.mask.transform(data_decoding)
@@ -115,9 +126,7 @@ class Solver(BaseSolver):
         X_test = np.vstack(X_test)
 
         # PCA
-        from sklearn.decomposition import PCA
-
-        pca = PCA(n_components=500)
+        pca = PCA(n_components=self.pca_components)
         X_train = pca.fit_transform(X_train)
         X_test = pca.transform(X_test)
 

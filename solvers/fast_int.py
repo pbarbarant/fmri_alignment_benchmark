@@ -9,6 +9,7 @@ with safe_import_context() as import_ctx:
     import numpy as np
     from sklearn.preprocessing import StandardScaler
     from benchmark_utils.config import MEMORY
+    from sklearn.decomposition import PCA
     from hyperalignment.fast_int import INT as HyperAlignment
 
 
@@ -21,7 +22,9 @@ class Solver(BaseSolver):
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
-    parameters = {}
+    parameters = {
+        "pca_components": [1000],
+    }
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
@@ -77,12 +80,14 @@ class Solver(BaseSolver):
         alignment_array.append(self.mask.transform(self.data_alignment_target))
         alignment_array = np.array(alignment_array)
 
-        # Compute the projected data into the common space (tunning matrices) for alignment data
+        # Compute the projected data into the common space (tuning matrices)
+        # for alignment data
         alignment_estimator = fast_int.fit(X_train=alignment_array)
         T_alignment = alignment_estimator.get_tuning_matrices()
         decoding_array = []
 
-        # Compute the projected data into the common space (tunning matrices) for decoding data
+        # Compute the projected data into the common space (tuning matrices)
+        # for decoding data
         for subject in self.dict_alignment.keys():
             data_decoding = self.dict_decoding[subject]
             masked_data_decoding = self.mask.transform(data_decoding)
@@ -104,10 +109,8 @@ class Solver(BaseSolver):
         # get only the decoding target data
         X_test = np.vstack(X_test)
 
-        # PCA
-        from sklearn.decomposition import PCA
-
-        pca = PCA(n_components=1000)
+        # PCA decomp (1000 components)
+        pca = PCA(n_components=self.pca_components)
         X_train = pca.fit_transform(X_train)
         X_test = pca.transform(X_test)
 

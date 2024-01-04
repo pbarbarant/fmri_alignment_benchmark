@@ -81,7 +81,9 @@ class Solver(BaseSolver):
             self.mask.transform(contrasts).T
             for _, contrasts in self.dict_alignment.items()
         ]
-        alignment_array.append(self.mask.transform(self.data_alignment_target).T)
+        alignment_array.append(
+            self.mask.transform(self.data_alignment_target).T
+        )
         alignment_estimator = srm.fit(alignment_array)
 
         for subject in self.dict_alignment.keys():
