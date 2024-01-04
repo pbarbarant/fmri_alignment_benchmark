@@ -18,7 +18,9 @@ We benchmark the following methods:
 * FastSRM
 * Optimal Transport
 * FUGW
-* Hyperalignment/INT
+* Hyperalignment : 
+  - pcha : Parcellation Hyperalignment
+  - slha : Searchlight Hyperalignment
 
 on five different datasets:
 
