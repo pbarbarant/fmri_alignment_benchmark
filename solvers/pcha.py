@@ -92,9 +92,7 @@ class Solver(BaseSolver):
 
         # Searchlights computation
         base_niimg = list(self.dict_alignment.items())[0][1]
-        parcels = compute_parcels(
-            base_niimg, mask=self.mask, n_parcels=self.n_parcels
-        )
+        parcels = compute_parcels(base_niimg, mask=self.mask, n_parcels=self.n_parcels)
 
         # Compute the projected data into the common space (tuning matrices)
         # for alignment data
