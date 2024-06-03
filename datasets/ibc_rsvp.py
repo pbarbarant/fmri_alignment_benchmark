@@ -62,7 +62,7 @@ class Dataset(BaseDataset):
         mask = load_mask(data_path, MEMORY)
 
         dict_alignment = dict()
-        dict_decoding = dict()
+        dict_sources = dict()
         dict_labels = dict()
 
         for subject in self.subjects:
@@ -74,18 +74,18 @@ class Dataset(BaseDataset):
             dict_labels[subject] = labels
 
             if subject == self.target:
-                data_alignment_target = alignment_contrasts
-                data_decoding_target = decoding_contrasts
+                data_target = alignment_contrasts
+                data_target = decoding_contrasts
             else:
                 dict_alignment[subject] = alignment_contrasts
-                dict_decoding[subject] = decoding_contrasts
+                dict_sources[subject] = decoding_contrasts
 
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(
             dict_alignment=dict_alignment,
-            dict_decoding=dict_decoding,
-            data_alignment_target=data_alignment_target,
-            data_decoding_target=data_decoding_target,
+            dict_sources=dict_sources,
+            data_target=data_target,
+            data_target=data_target,
             dict_labels=dict_labels,
             target=self.target,
             mask=mask,

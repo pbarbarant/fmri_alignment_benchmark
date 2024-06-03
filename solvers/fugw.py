@@ -39,10 +39,8 @@ class Solver(BaseSolver):
 
     def set_objective(
         self,
-        dict_alignment,
-        dict_decoding,
-        data_alignment_target,
-        data_decoding_target,
+        dict_sources,
+        data_target,
         dict_labels,
         target,
         mask,
@@ -52,10 +50,9 @@ class Solver(BaseSolver):
         # `Objective.get_objective`. This defines the benchmark's API for
         # passing the objective to the solver.
         # It is customizable for each benchmark.
-        self.dict_alignment = dict_alignment
-        self.dict_decoding = dict_decoding
-        self.data_alignment_target = data_alignment_target
-        self.data_decoding_target = data_decoding_target
+        self.dict_sources = dict_sources
+        self.data_target = data_target
+        self.data_target = data_target
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
@@ -69,8 +66,8 @@ class Solver(BaseSolver):
         y_train = []
         X_test = []
 
-        for subject in self.dict_alignment.keys():
-            source_data = self.dict_alignment[subject]
+        for subject in self.dict_sources.keys():
+            source_data = self.dict_sources[subject]
 
             alignment_estimator = FugwAlignment(
                 masker=self.mask,
@@ -82,8 +79,8 @@ class Solver(BaseSolver):
                 rho_fine=1e-2,
                 eps_fine=self.eps_fine,
                 radius=8,
-            ).fit(source_data, self.data_alignment_target)
-            data_decoding = self.dict_decoding[subject]
+            ).fit(source_data, self.data_target)
+            data_decoding = self.dict_sources[subject]
             aligned_data = alignment_estimator.transform(data_decoding)
             X_train.append(self.mask.transform(aligned_data))
             labels = self.dict_labels[subject]
@@ -93,7 +90,7 @@ class Solver(BaseSolver):
         self.y_train = np.hstack(y_train).ravel()
 
         # Test data
-        X_test = self.mask.transform(self.data_decoding_target)
+        X_test = self.mask.transform(self.data_target)
         self.y_test = self.dict_labels[self.target].ravel()
 
         # Standard scaling

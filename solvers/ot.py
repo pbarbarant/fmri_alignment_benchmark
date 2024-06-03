@@ -29,16 +29,20 @@ class Solver(BaseSolver):
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
     install_pip = "pip"
-    requirements = ["pip:fmralign", "joblib", "pip:ott-jax"]
+    requirements = [
+        "pip:fmralign",
+        "joblib",
+        "pip:jaxlib",
+        "jax[cpu]",
+        "pip:ott-jax",
+    ]
 
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(
         self,
-        dict_alignment,
-        dict_decoding,
-        data_alignment_target,
-        data_decoding_target,
+        dict_sources,
+        data_target,
         dict_labels,
         target,
         mask,
@@ -48,10 +52,8 @@ class Solver(BaseSolver):
         # `Objective.get_objective`. This defines the benchmark's API for
         # passing the objective to the solver.
         # It is customizable for each benchmark.
-        self.dict_alignment = dict_alignment
-        self.dict_decoding = dict_decoding
-        self.data_alignment_target = data_alignment_target
-        self.data_decoding_target = data_decoding_target
+        self.dict_sources = dict_sources
+        self.data_target = data_target
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
@@ -66,8 +68,8 @@ class Solver(BaseSolver):
         X_test = []
 
         dict_alignment_estimators = dict()
-        for subject in self.dict_alignment.keys():
-            source_data = self.dict_alignment[subject]
+        for subject in self.dict_sources.keys():
+            source_data = self.dict_sources[subject]
 
             pairwise_method = OptimalTransportAlignment(reg=self.reg)
             alignment_estimator = PairwiseAlignment(
@@ -76,11 +78,11 @@ class Solver(BaseSolver):
                 mask=self.mask,
                 memory=Memory(),
                 memory_level=1,
-            ).fit(source_data, self.data_alignment_target)
+            ).fit(source_data, self.data_target)
 
             dict_alignment_estimators[subject] = alignment_estimator
 
-            data_decoding = self.dict_decoding[subject]
+            data_decoding = self.dict_sources[subject]
             aligned_data = alignment_estimator.transform(data_decoding)
             X_train.append(self.mask.transform(aligned_data))
             labels = self.dict_labels[subject]
@@ -90,7 +92,7 @@ class Solver(BaseSolver):
         self.y_train = np.hstack(y_train).ravel()
 
         # Test data
-        X_test = self.mask.transform(self.data_decoding_target)
+        X_test = self.mask.transform(self.data_target)
         self.y_test = self.dict_labels[self.target].ravel()
 
         # Standard scaling
