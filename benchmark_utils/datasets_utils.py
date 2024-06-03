@@ -4,9 +4,6 @@ from nilearn import masking, maskers
 
 
 def load_dataset(subject, data_path, mask):
-    alignment_contrasts = mask.inverse_transform(
-        np.load(data_path / "alignment" / f"{subject}.npy")
-    )
     decoding_contrasts = mask.inverse_transform(
         np.load(data_path / "decoding" / f"{subject}.npy")
     )
@@ -15,7 +12,7 @@ def load_dataset(subject, data_path, mask):
         header=None,
     ).values.ravel()
 
-    return alignment_contrasts, decoding_contrasts, labels
+    return decoding_contrasts, labels
 
 
 def load_mask(data_path, memory):
