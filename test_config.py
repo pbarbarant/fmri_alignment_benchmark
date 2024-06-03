@@ -21,5 +21,6 @@ def check_test_solver_install(solver_class):
     if solver_class.name.lower() in fmralign_solvers:
         pytest.skip("fmralign solvers need to be installed from source")
 
+    # TODO Remove as fugw was updated
     if solver_class.name.lower() == "fugw":
         pytest.skip("Latest version of fugw is not available on PyPI")
