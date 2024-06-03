@@ -27,12 +27,12 @@ class Solver(BaseSolver):
         "eps_coarse": [1e-6],
         "eps_fine": [1e-6],
         # "radius": [8],
-        "id_reg": [False, True],
+        # "id_reg": [False, True],
     }
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
-    install_cmd = "conda"
+    install_pip = "pip"
     requirements = ["pip:fmralign", "joblib", "pip:fugw"]
 
     stopping_criterion = SingleRunCriterion()
@@ -82,7 +82,6 @@ class Solver(BaseSolver):
                 rho_fine=1e-2,
                 eps_fine=self.eps_fine,
                 radius=8,
-                id_reg=self.id_reg,
             ).fit(source_data, self.data_alignment_target)
             data_decoding = self.dict_decoding[subject]
             aligned_data = alignment_estimator.transform(data_decoding)

@@ -35,7 +35,7 @@ class Objective(BaseObjective):
     # solvers or datasets should be declared in Dataset or Solver (see
     # simulated.py and python-gd.py).
     # Example syntax: requirements = ['numpy', 'pip:jax', 'pytorch:pytorch']
-    install_cmd = "conda"
+    install_pip = "pip"
     requirements = [
         "pip:fmralign",
         "pip:fastsrm",

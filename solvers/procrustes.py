@@ -26,7 +26,7 @@ class Solver(BaseSolver):
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
-    install_cmd = "conda"
+    install_pip = "pip"
     requirements = ["pip:fmralign", "joblib"]
 
     stopping_criterion = SingleRunCriterion()
