@@ -49,9 +49,6 @@ class Dataset(BaseDataset):
         ]
 
     def load_bold5000(self, subject, fold, data_path, mask):
-        alignment_contrasts = mask.inverse_transform(
-            np.load(data_path / "alignment" / f"{subject}.npy")
-        )
         decoding_contrasts = mask.inverse_transform(
             np.load(data_path / "decoding" / f"{subject}_{fold}.npy")
         )
@@ -60,7 +57,7 @@ class Dataset(BaseDataset):
             header=None,
         ).values.ravel()
 
-        return alignment_contrasts, decoding_contrasts, labels
+        return decoding_contrasts, labels
 
     def get_data(self):
         # The return arguments of this function are passed as keyword arguments
@@ -71,30 +68,24 @@ class Dataset(BaseDataset):
         # Load the masker object
         mask = load_mask(data_path, MEMORY)
 
-        dict_alignment = dict()
         dict_sources = dict()
         dict_labels = dict()
 
         for subject in self.subjects:
             (
-                alignment_contrasts,
                 decoding_contrasts,
                 labels,
             ) = self.load_bold5000(subject, self.fold, data_path, mask)
             dict_labels[subject] = labels
 
             if subject == self.target:
-                data_target = alignment_contrasts
                 data_target = decoding_contrasts
             else:
-                dict_alignment[subject] = alignment_contrasts
                 dict_sources[subject] = decoding_contrasts
 
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(
-            dict_alignment=dict_alignment,
             dict_sources=dict_sources,
-            data_target=data_target,
             data_target=data_target,
             dict_labels=dict_labels,
             target=self.target,
