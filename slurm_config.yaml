@@ -6,3 +6,6 @@ slurm_additional_parameters:
   gpus-per-node: 1
   cpus-per-task: 10         # requires 10 CPUs per job
   # nodes: 1                  # requires 1 node per job
+
+# slurm command to run the job
+# benchopt run --slurm slurm_config.yaml
