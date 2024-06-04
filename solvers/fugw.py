@@ -25,8 +25,8 @@ class Solver(BaseSolver):
         "alpha_coarse": [0.5, 0.75],
         "alpha_fine": [0.5, 0.75],
         # "rho": [1.0],
-        "eps_coarse": [1e-6],
-        "eps_fine": [1e-6],
+        "eps_coarse": [1e-4],
+        "eps_fine": [1e-4],
         # "radius": [8],
         # "id_reg": [False, True],
     }
