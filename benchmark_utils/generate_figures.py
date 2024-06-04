@@ -12,7 +12,11 @@ plt.rcParams["figure.dpi"] = 500
 
 # %%
 # Path to the data
-data_path = Path.cwd().parent / "outputs"
+data_path = Path(
+    "/data/parietal/store3/work/pbarbara/fmralign_benchmark_old/outputs"
+)
+figures_path = data_path / "figures"
+figures_path.mkdir(parents=True, exist_ok=True)
 # Parse the latest file
 file_list = glob.glob(os.path.join(data_path, "*.parquet"))
 latest_file = max(file_list, key=os.path.getmtime)
@@ -125,7 +129,7 @@ for x in np.arange(-100, 100, 2.5):
 # )
 plt.title("Prediction accuracy over all target subjects\n")
 plt.xlim(-10, 10)
-plt.savefig("../outputs/figures/accuracy_gain.png", bbox_inches="tight")
+plt.savefig(figures_path / "accuracy_gain.png", bbox_inches="tight")
 plt.show()
 
 # %%
@@ -204,5 +208,5 @@ for x in np.arange(0, 100):
 # )
 plt.title("Relative time\n")
 plt.xlim(-2, 30)
-plt.savefig("../outputs/figures/time.png", bbox_inches="tight")
+plt.savefig(figures_path / "time.png", bbox_inches="tight")
 plt.show()
