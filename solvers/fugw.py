@@ -5,16 +5,18 @@ from benchopt import BaseSolver, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     from benchopt.stopping_criterion import SingleRunCriterion
+    from fmralign.alignment_methods import FugwAlignment
     from sklearn.preprocessing import StandardScaler
-    from benchmark_utils.fugw_utils import FugwAlignment
     import numpy as np
+    from joblib import Memory
+    from nilearn import masking
 
 
 # The benchmark solvers must be named `Solver` and
 # inherit from `BaseSolver` for `benchopt` to work properly.
 class Solver(BaseSolver):
     # Name to select the solver in the CLI and to display the results.
-    name = "fugw"
+    name = "fugw_fmralign"
 
     # List of parameters for the solver. The benchmark will consider
     # the cross product for each key in the dictionary.
@@ -33,7 +35,7 @@ class Solver(BaseSolver):
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
     install_pip = "pip"
-    requirements = ["pip:fmralign", "joblib", "pip:fugw"]
+    requirements = ["pip:fmralign", "joblib"]
 
     stopping_criterion = SingleRunCriterion()
 
@@ -52,10 +54,17 @@ class Solver(BaseSolver):
         # It is customizable for each benchmark.
         self.dict_sources = dict_sources
         self.data_target = data_target
-        self.data_target = data_target
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
+        # Get main connected component of segmentation
+        self.segmentation = (
+            masking.compute_background_mask(
+                self.mask.mask_img_, connected=True
+            ).get_fdata()
+            > 0
+        )
+        print("Segmentation shape:", self.segmentation.shape)
 
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
@@ -69,20 +78,31 @@ class Solver(BaseSolver):
         for subject in self.dict_sources.keys():
             source_data = self.dict_sources[subject]
 
+            # import ipdb
+
+            # ipdb.set_trace()
             alignment_estimator = FugwAlignment(
-                masker=self.mask,
-                n_samples=1e3,
                 alpha_coarse=self.alpha_coarse,
-                rho_coarse=1,
-                eps_coarse=self.eps_coarse,
                 alpha_fine=self.alpha_fine,
+                rho_coarse=1.0,
                 rho_fine=1e-2,
+                eps_coarse=self.eps_coarse,
                 eps_fine=self.eps_fine,
                 radius=8,
-            ).fit(source_data, self.data_target)
+                anisotropy=(3, 3, 3),
+                reg_mode="independent",
+                divergence="kl",
+            ).fit(
+                self.mask.transform(source_data),
+                self.mask.transform(self.data_target),
+                self.segmentation,
+            )
+
             data_decoding = self.dict_sources[subject]
-            aligned_data = alignment_estimator.transform(data_decoding)
-            X_train.append(self.mask.transform(aligned_data))
+            aligned_data = alignment_estimator.transform(
+                self.mask.transform(data_decoding)
+            )
+            X_train.append(aligned_data)
             labels = self.dict_labels[subject]
             y_train.append(labels)
 
