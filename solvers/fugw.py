@@ -8,7 +8,6 @@ with safe_import_context() as import_ctx:
     from fmralign.alignment_methods import FugwAlignment
     from sklearn.preprocessing import StandardScaler
     import numpy as np
-    from joblib import Memory
     from nilearn import masking
 
 
