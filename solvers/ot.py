@@ -33,7 +33,7 @@ class Solver(BaseSolver):
         "pip:fmralign",
         "joblib",
         "pip:jaxlib",
-        "jax[cpu]",
+        "pip:jax[cpu]",
         "pip:ott-jax",
     ]
 
