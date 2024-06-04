@@ -22,11 +22,12 @@ class Solver(BaseSolver):
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
         # "n_samples": [1e4],
-        "alpha_coarse": [0.5, 0.75],
-        "alpha_fine": [0.5, 0.75],
-        # "rho": [1.0],
-        "eps_coarse": [1e-4],
-        "eps_fine": [1e-4],
+        "alpha_coarse": [0.5, 0.8, 1.0],
+        "alpha_fine": [0.5, 0.8, 1.0],
+        "rho_coarse": [1e-2, 1e-1, 1e0, 1e1, 1e2],
+        "rho_fine": [1e-2, 1e-1, 1e0, 1e1, 1e2],
+        "eps_coarse": [1e-6],
+        "eps_fine": [1e-6],
         # "radius": [8],
         # "id_reg": [False, True],
     }
@@ -83,8 +84,8 @@ class Solver(BaseSolver):
             alignment_estimator = FugwAlignment(
                 alpha_coarse=self.alpha_coarse,
                 alpha_fine=self.alpha_fine,
-                rho_coarse=1.0,
-                rho_fine=1e-2,
+                rho_coarse=self.rho_coarse,
+                rho_fine=self.rho_fine,
                 eps_coarse=self.eps_coarse,
                 eps_fine=self.eps_fine,
                 radius=8,
