@@ -95,6 +95,7 @@ class Solver(BaseSolver):
                 self.mask.transform(source_data),
                 self.mask.transform(self.data_target),
                 self.segmentation,
+                verbose=True,
             )
 
             data_decoding = self.dict_sources[subject]
