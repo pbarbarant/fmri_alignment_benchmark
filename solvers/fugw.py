@@ -21,14 +21,12 @@ class Solver(BaseSolver):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        # "n_samples": [1e4],
+        "n_samples": [1e3],
         "alpha": [0.8],
         "rho_coarse": [1e5],
         "rho_fine": [1e4],
         "eps_coarse": [1e-6],
         "eps_fine": [1e-6],
-        # "radius": [8],
-        # "id_reg": [False, True],
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -95,6 +93,9 @@ class Solver(BaseSolver):
                 self.mask.transform(source_data),
                 self.mask.transform(self.data_target),
                 self.segmentation,
+                method="coarse-to-fine",
+                n_landmarks=1000,
+                n_samples=int(self.n_samples),
                 verbose=True,
             )
 
