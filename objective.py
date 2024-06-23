@@ -42,6 +42,7 @@ class Objective(BaseObjective):
         "scikit-learn",
         "numpy",
         "joblib",
+        "hyperalignment",
     ]
 
     # warnings.filterwarnings("ignore", category=FutureWarning)

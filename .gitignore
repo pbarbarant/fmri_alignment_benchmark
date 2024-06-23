@@ -1,3 +1,6 @@
+# macOS
+.DS_Store
+
 # Cache directories
 .pytest_cache
 __pycache__
@@ -13,6 +16,5 @@ benchopt_run/
 
 # Config files
 benchopt.ini
-
-.DS_Store
 coverage.xml
+benchmark_utils/config.py

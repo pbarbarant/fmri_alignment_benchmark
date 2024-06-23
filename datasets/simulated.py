@@ -84,9 +84,7 @@ class Dataset(BaseDataset):
                     data_decoding,
                 ) = self.generate_mock_data_subject()
                 # Convert the data to a brain volume using the masker.
-                dict_alignment[subject] = mask.inverse_transform(
-                    data_alignment
-                )
+                dict_alignment[subject] = mask.inverse_transform(data_alignment)
                 dict_decoding[subject] = mask.inverse_transform(data_decoding)
                 labels = self.generate_fake_labels()
                 dict_labels[subject] = labels
