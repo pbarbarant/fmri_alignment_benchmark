@@ -27,17 +27,15 @@ class Solver(BaseSolver):
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
-    install_cmd = "conda"
+    install_pip = "pip"
     requirements = ["pip:fastsrm", "joblib"]
 
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(
         self,
-        dict_alignment,
-        dict_decoding,
-        data_alignment_target,
-        data_decoding_target,
+        dict_sources,
+        data_target,
         dict_labels,
         target,
         mask,
@@ -47,10 +45,8 @@ class Solver(BaseSolver):
         # `Objective.get_objective`. This defines the benchmark's API for
         # passing the objective to the solver.
         # It is customizable for each benchmark.
-        self.dict_alignment = dict_alignment
-        self.dict_decoding = dict_decoding
-        self.data_alignment_target = data_alignment_target
-        self.data_decoding_target = data_decoding_target
+        self.dict_sources = dict_sources
+        self.data_target = data_target
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
@@ -79,15 +75,13 @@ class Solver(BaseSolver):
 
         alignment_array = [
             self.mask.transform(contrasts).T
-            for _, contrasts in self.dict_alignment.items()
+            for _, contrasts in self.dict_sources.items()
         ]
-        alignment_array.append(
-            self.mask.transform(self.data_alignment_target).T
-        )
+        alignment_array.append(self.mask.transform(self.data_target).T)
         alignment_estimator = srm.fit(alignment_array)
 
-        for subject in self.dict_alignment.keys():
-            data_decoding = self.dict_decoding[subject]
+        for subject in self.dict_sources.keys():
+            data_decoding = self.dict_sources[subject]
             aligned_data = alignment_estimator.transform(
                 [self.mask.transform(data_decoding).T]
             ).T
@@ -99,7 +93,7 @@ class Solver(BaseSolver):
         self.y_train = np.hstack(y_train).ravel()
 
         # Align the test data
-        X_test = self.mask.transform(self.data_decoding_target)
+        X_test = self.mask.transform(self.data_target)
         X_test = alignment_estimator.transform([X_test.T]).T
 
         # Standard scaling

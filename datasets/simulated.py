@@ -23,7 +23,7 @@ class Dataset(BaseDataset):
 
     # List of packages needed to run the dataset. See the corresponding
     # section in objective.py
-    install_cmd = "conda"
+    install_pip = "pip"
     requirements = ["nilearn", "pandas"]
 
     def __init__(
@@ -31,18 +31,14 @@ class Dataset(BaseDataset):
         target="sub-01",
     ):
         self.subjects = ["sub-01", "sub-02", "sub-03"]
-        self.n_samples_alignment = 100
         self.n_samples_decoding = 150
         self.n_features = 1876
 
     def generate_mock_data_subject(self):
-        data_alignment = np.random.randn(
-            self.n_samples_alignment, self.n_features
-        )
         data_decoding = np.random.randn(
             self.n_samples_decoding, self.n_features
         )
-        return data_alignment, data_decoding
+        return data_decoding
 
     def generate_fake_labels(self):
         return np.random.randint(10, size=self.n_samples_decoding)
@@ -56,47 +52,30 @@ class Dataset(BaseDataset):
         mask_img = datasets.load_mni152_brain_mask(resolution=10)
         mask = maskers.NiftiMasker(mask_img=mask_img).fit()
         # Generate pseudorandom data using `numpy`.
-        dict_alignment = dict()
-        dict_decoding = dict()
+        dict_sources = dict()
         dict_labels = dict()
         for subject in self.subjects:
             if subject == self.target:
                 # Generate pseudorandom data using `numpy` for target subject.
-                (
-                    data_alignment_target,
-                    data_decoding_target,
-                ) = self.generate_mock_data_subject()
+                data_target = self.generate_mock_data_subject()
                 # Convert the data to a brain volume using the masker.
-                data_alignment_target = mask.inverse_transform(
-                    data_alignment_target
-                )
-                data_decoding_target = mask.inverse_transform(
-                    data_decoding_target
-                )
+                data_target = mask.inverse_transform(data_target)
                 # Generate pseudorandom labels using `numpy` for target subject
                 labels = self.generate_fake_labels()
                 dict_labels[subject] = labels
 
             else:
                 # Generate pseudorandom data using `numpy` for source subjects.
-                (
-                    data_alignment,
-                    data_decoding,
-                ) = self.generate_mock_data_subject()
+                data_decoding = self.generate_mock_data_subject()
                 # Convert the data to a brain volume using the masker.
-                dict_alignment[subject] = mask.inverse_transform(
-                    data_alignment
-                )
-                dict_decoding[subject] = mask.inverse_transform(data_decoding)
+                dict_sources[subject] = mask.inverse_transform(data_decoding)
                 labels = self.generate_fake_labels()
                 dict_labels[subject] = labels
 
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(
-            dict_alignment=dict_alignment,
-            dict_decoding=dict_decoding,
-            data_alignment_target=data_alignment_target,
-            data_decoding_target=data_decoding_target,
+            dict_sources=dict_sources,
+            data_target=data_target,
             dict_labels=dict_labels,
             target=self.target,
             mask=mask,

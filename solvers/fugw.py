@@ -5,9 +5,10 @@ from benchopt import BaseSolver, safe_import_context
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
     from benchopt.stopping_criterion import SingleRunCriterion
+    from fmralign.alignment_methods import FugwAlignment
     from sklearn.preprocessing import StandardScaler
-    from benchmark_utils.fugw_utils import FugwAlignment
     import numpy as np
+    from nilearn import masking
 
 
 # The benchmark solvers must be named `Solver` and
@@ -20,29 +21,24 @@ class Solver(BaseSolver):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        # "n_samples": [1e4],
-        "alpha_coarse": [0.5, 0.75],
-        "alpha_fine": [0.5, 0.75],
-        # "rho": [1.0],
+        "alpha": [0.8],
+        "rho_coarse": [1e5],
+        "rho_fine": [1e4],
         "eps_coarse": [1e-6],
         "eps_fine": [1e-6],
-        # "radius": [8],
-        "id_reg": [False, True],
     }
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
-    install_cmd = "conda"
-    requirements = ["pip:fmralign", "joblib", "pip:fugw"]
+    install_pip = "pip"
+    requirements = ["pip:fmralign", "joblib"]
 
     stopping_criterion = SingleRunCriterion()
 
     def set_objective(
         self,
-        dict_alignment,
-        dict_decoding,
-        data_alignment_target,
-        data_decoding_target,
+        dict_sources,
+        data_target,
         dict_labels,
         target,
         mask,
@@ -52,13 +48,19 @@ class Solver(BaseSolver):
         # `Objective.get_objective`. This defines the benchmark's API for
         # passing the objective to the solver.
         # It is customizable for each benchmark.
-        self.dict_alignment = dict_alignment
-        self.dict_decoding = dict_decoding
-        self.data_alignment_target = data_alignment_target
-        self.data_decoding_target = data_decoding_target
+        self.dict_sources = dict_sources
+        self.data_target = data_target
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
+        # Get main connected component of segmentation
+        self.segmentation = (
+            masking.compute_background_mask(
+                self.mask.mask_img_, connected=True
+            ).get_fdata()
+            > 0
+        )
+        print("Segmentation shape:", self.segmentation.shape)
 
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
@@ -69,24 +71,38 @@ class Solver(BaseSolver):
         y_train = []
         X_test = []
 
-        for subject in self.dict_alignment.keys():
-            source_data = self.dict_alignment[subject]
+        for subject in self.dict_sources.keys():
+            source_data = self.dict_sources[subject]
 
+            # import ipdb
+
+            # ipdb.set_trace()
             alignment_estimator = FugwAlignment(
-                masker=self.mask,
-                n_samples=1e3,
-                alpha_coarse=self.alpha_coarse,
-                rho_coarse=1,
+                alpha_coarse=self.alpha,
+                alpha_fine=self.alpha,
+                rho_coarse=self.rho_coarse,
+                rho_fine=self.rho_fine,
                 eps_coarse=self.eps_coarse,
-                alpha_fine=self.alpha_fine,
-                rho_fine=1e-2,
                 eps_fine=self.eps_fine,
+                anisotropy=(3, 3, 3),
+                reg_mode="independent",
+                divergence="kl",
+            ).fit(
+                self.mask.transform(source_data),
+                self.mask.transform(self.data_target),
+                self.segmentation,
+                method="coarse-to-fine",
+                n_landmarks=1000,
+                n_samples=1000,
                 radius=8,
-                id_reg=self.id_reg,
-            ).fit(source_data, self.data_alignment_target)
-            data_decoding = self.dict_decoding[subject]
-            aligned_data = alignment_estimator.transform(data_decoding)
-            X_train.append(self.mask.transform(aligned_data))
+                verbose=True,
+            )
+
+            data_decoding = self.dict_sources[subject]
+            aligned_data = alignment_estimator.transform(
+                self.mask.transform(data_decoding)
+            )
+            X_train.append(aligned_data)
             labels = self.dict_labels[subject]
             y_train.append(labels)
 
@@ -94,7 +110,7 @@ class Solver(BaseSolver):
         self.y_train = np.hstack(y_train).ravel()
 
         # Test data
-        X_test = self.mask.transform(self.data_decoding_target)
+        X_test = self.mask.transform(self.data_target)
         self.y_test = self.dict_labels[self.target].ravel()
 
         # Standard scaling
