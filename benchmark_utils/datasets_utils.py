@@ -1,11 +1,11 @@
-import numpy as np
+import joblib
 import pandas as pd
 from nilearn import masking, maskers
 
 
 def load_dataset(subject, data_path, mask):
     decoding_contrasts = mask.inverse_transform(
-        np.load(data_path / "decoding" / f"{subject}.npy")
+        joblib.load(data_path / f"{subject}.pkl")
     )
     labels = pd.read_csv(
         data_path / "labels" / f"{subject}.csv",
