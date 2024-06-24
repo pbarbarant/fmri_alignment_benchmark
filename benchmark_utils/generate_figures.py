@@ -13,7 +13,7 @@ plt.rcParams["figure.dpi"] = 500
 # %%
 # Path to the data
 data_path = Path(
-    "/data/parietal/store3/work/pbarbara/fmralign_benchmark_old/outputs"
+    "/data/parietal/store3/work/pbarbara/fmri_alignment_benchmark/outputs"
 )
 figures_path = data_path / "figures"
 figures_path.mkdir(parents=True, exist_ok=True)
