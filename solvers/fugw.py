@@ -21,7 +21,6 @@ class Solver(BaseSolver):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        "n_samples": [1e3],
         "alpha": [0.8],
         "rho_coarse": [1e5],
         "rho_fine": [1e4],
@@ -94,7 +93,7 @@ class Solver(BaseSolver):
                 self.segmentation,
                 method="coarse-to-fine",
                 n_landmarks=1000,
-                n_samples=int(self.n_samples),
+                n_samples=1000,
                 radius=8,
                 verbose=True,
             )
