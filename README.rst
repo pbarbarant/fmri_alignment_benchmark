@@ -33,19 +33,19 @@ This benchmark can be run using the following commands:
 .. code-block::
 
    $ pip install -U benchopt
-   $ git clone https://github.com/pbarbarant/fmralign_benchmark_old
-   $ benchopt run fmralign_benchmark_old
+   $ git clone https://github.com/pbarbarant/fmri_alignment_benchmark
+   $ benchopt run fmri_alignment_benchmark
 
 Apart from the problem, options can be passed to ``benchopt run``, to restrict the benchmarks to some solvers or datasets, e.g.:
 
 .. code-block::
 
-	$ benchopt run fmralign_benchmark_old -s solver1 -d dataset2 --max-runs 10 --n-repetitions 10
+	$ benchopt run fmri_alignment_benchmark -s solver1 -d dataset2 --max-runs 10 --n-repetitions 10
 
 
 Use ``benchopt run -h`` for more details about these options, or visit https://benchopt.github.io/api.html.
 
-.. |Build Status| image:: https://github.com/pbarbarant/fmralign_benchmark_old/workflows/Tests/badge.svg
-   :target: https://github.com/pbarbarant/fmralign_benchmark_old/actions
+.. |Build Status| image:: https://github.com/pbarbarant/fmri_alignment_benchmark/workflows/Tests/badge.svg
+   :target: https://github.com/pbarbarant/fmri_alignment_benchmark/actions
 .. |Python 3.11+| image:: https://img.shields.io/badge/python-3.11%2B-blue
    :target: https://www.python.org/downloads/release/python-3115/
