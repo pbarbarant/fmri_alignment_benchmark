@@ -18,7 +18,7 @@ class Objective(BaseObjective):
     name = "fMRI decoding"
 
     # URL of the main repo for this benchmark.
-    url = "https://github.com/pbarbarant/fmralign_benchmark_old"
+    url = "https://github.com/pbarbarant/fmri_alignment_benchmark"
 
     # List of parameters for the objective. The benchmark will consider
     # the cross product for each key in the dictionary.
