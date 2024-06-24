@@ -85,7 +85,6 @@ class Solver(BaseSolver):
                 rho_fine=self.rho_fine,
                 eps_coarse=self.eps_coarse,
                 eps_fine=self.eps_fine,
-                radius=8,
                 anisotropy=(3, 3, 3),
                 reg_mode="independent",
                 divergence="kl",
@@ -96,6 +95,7 @@ class Solver(BaseSolver):
                 method="coarse-to-fine",
                 n_landmarks=1000,
                 n_samples=int(self.n_samples),
+                radius=8,
                 verbose=True,
             )
 
