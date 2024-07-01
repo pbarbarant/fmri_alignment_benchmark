@@ -22,10 +22,8 @@ class Solver(BaseSolver):
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
         "alpha": [0.8],
-        "rho_coarse": [1e5],
-        "rho_fine": [1e4],
-        "eps_coarse": [1e-6],
-        "eps_fine": [1e-6],
+        "rho": [1e3],
+        "eps": [1e-6],
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -73,29 +71,33 @@ class Solver(BaseSolver):
 
         for subject in self.dict_sources.keys():
             source_data = self.dict_sources[subject]
-
-            # import ipdb
-
-            # ipdb.set_trace()
             alignment_estimator = FugwAlignment(
+                self.segmentation,
                 alpha_coarse=self.alpha,
                 alpha_fine=self.alpha,
-                rho_coarse=self.rho_coarse,
-                rho_fine=self.rho_fine,
-                eps_coarse=self.eps_coarse,
-                eps_fine=self.eps_fine,
+                rho_coarse=self.rho,
+                rho_fine=self.rho,
+                eps_coarse=self.eps,
+                eps_fine=self.eps,
+                method="coarse-to-fine",
                 anisotropy=(3, 3, 3),
                 reg_mode="independent",
                 divergence="kl",
+                n_landmarks=100,
+                n_samples=3000,
+                radius=10,
+                verbose=True,
+                coarse_mapping_solver="mm",
+                fine_mapping_solver="mm",
+                coarse_mapping_solver_params={
+                    "nits_bcd": 5,
+                },
+                fine_mapping_solver_params={
+                    "nits_bcd": 5,
+                },
             ).fit(
                 self.mask.transform(source_data),
                 self.mask.transform(self.data_target),
-                self.segmentation,
-                method="coarse-to-fine",
-                n_landmarks=1000,
-                n_samples=1000,
-                radius=8,
-                verbose=True,
             )
 
             data_decoding = self.dict_sources[subject]
