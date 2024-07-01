@@ -61,8 +61,10 @@ class Solver(BaseSolver):
             ).get_fdata()
             > 0
         )
+        self.n_samples = 1000 if self.anisotropy[0] < 3 else 3000
         print("Segmentation shape:", self.segmentation.shape)
         print("Anisotropy shape:", self.anisotropy)
+        print("Number of samples:", self.n_samples)
 
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
@@ -88,7 +90,7 @@ class Solver(BaseSolver):
                 reg_mode="independent",
                 divergence="kl",
                 n_landmarks=100,
-                n_samples=3000,
+                n_samples=self.n_samples,
                 radius=10,
                 verbose=True,
                 coarse_mapping_solver="mm",
