@@ -23,8 +23,6 @@ latest_file = max(file_list, key=os.path.getmtime)
 df = pd.read_parquet(latest_file)
 # Filter out useless data
 df = df[["solver_name", "objective_value", "data_name", "time"]]
-df
-# %%
 # Remove the simulated data
 df.drop(df[df["data_name"].str.contains("Simulated")].index, inplace=True)
 
@@ -130,7 +128,7 @@ for x in np.arange(-100, 100, 10):
 # )
 plt.title("Prediction accuracy over all target subjects\n")
 plt.xlim(-50, 80)
-# plt.savefig(figures_path / "accuracy_gain.png", bbox_inches="tight")
+plt.savefig(figures_path / "accuracy_gain.png", bbox_inches="tight")
 plt.show()
 
 # %%
@@ -209,7 +207,7 @@ for x in np.arange(0, 100):
 # )
 plt.title("Relative time\n")
 plt.xlim(-2, 30)
-# plt.savefig(figures_path / "time.png", bbox_inches="tight")
+plt.savefig(figures_path / "time.png", bbox_inches="tight")
 plt.show()
 
 df
