@@ -23,6 +23,8 @@ latest_file = max(file_list, key=os.path.getmtime)
 df = pd.read_parquet(latest_file)
 # Filter out useless data
 df = df[["solver_name", "objective_value", "data_name", "time"]]
+df
+# %%
 # Remove the simulated data
 df.drop(df[df["data_name"].str.contains("Simulated")].index, inplace=True)
 
@@ -68,9 +70,8 @@ ax1 = sns.boxplot(
     x="objective_value",
     y="data_name",
     hue="solver_name",
-    color="white",
+    color="lightblue",
     showfliers=False,
-    # showmeans=True,
 )
 sns.stripplot(
     x="objective_value",
@@ -103,15 +104,15 @@ solvers = df["solver_name"].unique()
 for i in range(len(df["data_name"].unique())):
     ax1.add_patch(
         plt.Rectangle(
-            (-20, i - 0.5),
-            40,
+            (-100, i - 0.5),
+            200,
             1,
             fill=True,
             color="grey",
             alpha=0.1 * (1 - i % 2),
         )
     )
-for x in np.arange(-100, 100, 2.5):
+for x in np.arange(-100, 100, 10):
     if x == 0:
         plt.axvline(x=x, color="black", alpha=0.7, linestyle="-")
     else:
@@ -128,8 +129,8 @@ for x in np.arange(-100, 100, 2.5):
 #     ],
 # )
 plt.title("Prediction accuracy over all target subjects\n")
-plt.xlim(-10, 10)
-plt.savefig(figures_path / "accuracy_gain.png", bbox_inches="tight")
+plt.xlim(-50, 80)
+# plt.savefig(figures_path / "accuracy_gain.png", bbox_inches="tight")
 plt.show()
 
 # %%
@@ -208,5 +209,7 @@ for x in np.arange(0, 100):
 # )
 plt.title("Relative time\n")
 plt.xlim(-2, 30)
-plt.savefig(figures_path / "time.png", bbox_inches="tight")
+# plt.savefig(figures_path / "time.png", bbox_inches="tight")
 plt.show()
+
+df
