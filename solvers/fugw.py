@@ -62,6 +62,7 @@ class Solver(BaseSolver):
             > 0
         )
         print("Segmentation shape:", self.segmentation.shape)
+        print("Anisotropy shape:", self.anisotropy)
 
     def run(self, n_iter):
         # This is the function that is called to evaluate the solver.
