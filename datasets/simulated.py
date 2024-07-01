@@ -32,7 +32,7 @@ class Dataset(BaseDataset):
     ):
         self.subjects = ["sub-01", "sub-02", "sub-03"]
         self.n_samples_decoding = 150
-        self.n_features = 1876
+        self.n_features = 69765
 
     def generate_mock_data_subject(self):
         data_decoding = np.random.randn(
@@ -49,7 +49,7 @@ class Dataset(BaseDataset):
         # API to pass data. It is customizable for each benchmark.
 
         # Create a masker to extract the data from the brain volume.
-        mask_img = datasets.load_mni152_brain_mask(resolution=10)
+        mask_img = datasets.load_mni152_brain_mask(resolution=3)
         mask = maskers.NiftiMasker(mask_img=mask_img).fit()
         # Generate pseudorandom data using `numpy`.
         dict_sources = dict()
