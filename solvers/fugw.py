@@ -51,6 +51,9 @@ class Solver(BaseSolver):
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
+        self.anisotropy = tuple(
+            np.abs(self.mask.mask_img_.affine.diagonal()[:3])
+        )
         # Get main connected component of segmentation
         self.segmentation = (
             masking.compute_background_mask(
@@ -80,7 +83,7 @@ class Solver(BaseSolver):
                 eps_coarse=self.eps,
                 eps_fine=self.eps,
                 method="coarse-to-fine",
-                anisotropy=(3, 3, 3),
+                anisotropy=self.anisotropy,
                 reg_mode="independent",
                 divergence="kl",
                 n_landmarks=100,
