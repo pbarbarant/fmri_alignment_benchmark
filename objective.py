@@ -81,7 +81,7 @@ class Objective(BaseObjective):
         clf = LinearSVC(max_iter=int(self.max_iter))
         clf.fit(X_train, y_train)
         score = clf.score(X_test, y_test)
-
+        print(f"Decoding accuracy: {score:.2f}")
         # This method can return many metrics in a dictionary. One of these
         # metrics needs to be `value` for convergence detection purposes.
         return dict(
