@@ -16,6 +16,9 @@ DATA_PATH_IBC_MATHLANG_AUDIO = root / "IBC_MathLangAudio"
 # path to Neuromod data
 DATA_PATH_NEUROMOD = root / "Neuromod"
 
+# path to Forrest data
+DATA_PATH_FORREST = root / "Forrest"
+
 # path to BOLD5000 data
 DATA_PATH_BOLD5000 = root / "BOLD5000"
 
