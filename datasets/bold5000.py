@@ -8,7 +8,7 @@ with safe_import_context() as import_ctx:
     from benchmark_utils.config import DATA_PATH_BOLD5000, MEMORY
     from benchmark_utils.datasets_utils import load_mask
     from pathlib import Path
-    import numpy as np
+    import joblib
     import pandas as pd
 
 
@@ -50,7 +50,7 @@ class Dataset(BaseDataset):
 
     def load_bold5000(self, subject, fold, data_path, mask):
         decoding_contrasts = mask.inverse_transform(
-            np.load(data_path / "decoding" / f"{subject}_{fold}.npy")
+            joblib.load(data_path / f"{subject}_{fold}.pkl")
         )
         labels = pd.read_csv(
             data_path / "labels" / f"{subject}_{fold}.csv",
