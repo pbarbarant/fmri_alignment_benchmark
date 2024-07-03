@@ -24,6 +24,7 @@ class Solver(BaseSolver):
         "alpha": [0.8],
         "rho": [1e3],
         "eps": [1e-6],
+        "solver": ["mm", "sinkhorn", "ibpp"],
     }
 
     # List of packages needed to run the solver. See the corresponding
