@@ -4,6 +4,7 @@ from benchopt import BaseSolver, safe_import_context
 # - skipping import to speed up autocompletion in CLI.
 # - getting requirements info when all dependencies are not installed.
 with safe_import_context() as import_ctx:
+    from benchmark_utils.config import MEMORY
     from benchopt.stopping_criterion import SingleRunCriterion
     from fmralign.pairwise_alignment import PairwiseAlignment
     from sklearn.preprocessing import StandardScaler
@@ -66,8 +67,9 @@ class Solver(BaseSolver):
                 alignment_method="ridge_cv",
                 n_pieces=self.n_pieces,
                 mask=self.mask,
-                memory=Memory(),
+                memory=Memory(MEMORY),
                 memory_level=1,
+                n_jobs=10,
             ).fit(source_data, self.data_target)
 
             data_decoding = self.dict_sources[subject]
