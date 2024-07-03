@@ -25,7 +25,7 @@ class Dataset(BaseDataset):
             "sub-CSI1",
             "sub-CSI2",
             "sub-CSI3",
-            "sub-CSI4",
+            # "sub-CSI4",
         ],
         "fold": [
             "fold_01",
@@ -45,7 +45,7 @@ class Dataset(BaseDataset):
             "sub-CSI1",
             "sub-CSI2",
             "sub-CSI3",
-            "sub-CSI4",
+            # "sub-CSI4",
         ]
 
     def load_bold5000(self, subject, fold, data_path, mask):
