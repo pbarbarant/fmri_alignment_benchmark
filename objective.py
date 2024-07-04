@@ -55,8 +55,8 @@ class Objective(BaseObjective):
 
     def set_data(
         self,
-        dict_sources,
-        data_target,
+        dict_alignment,
+        dict_decoding,
         dict_labels,
         target,
         mask,
@@ -64,8 +64,8 @@ class Objective(BaseObjective):
         # The keyword arguments of this function are the keys of the dictionary
         # returned by `Dataset.get_data`. This defines the benchmark's
         # API to pass data. This is customizable for each benchmark.
-        self.dict_sources = dict_sources
-        self.data_target = data_target
+        self.dict_alignment = dict_alignment
+        self.dict_decoding = dict_decoding
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
@@ -106,8 +106,8 @@ class Objective(BaseObjective):
         # benchmark's API for passing the objective to the solver.
         # It is customizable for each benchmark.
         return dict(
-            dict_sources=self.dict_sources,
-            data_target=self.data_target,
+            dict_alignment=self.dict_alignment,
+            dict_decoding=self.dict_decoding,
             dict_labels=self.dict_labels,
             target=self.target,
             mask=self.mask,
