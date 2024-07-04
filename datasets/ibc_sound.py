@@ -59,25 +59,27 @@ class Dataset(BaseDataset):
         # Load the masker object
         mask = load_mask(data_path, MEMORY)
 
-        dict_sources = dict()
-        dict_labels = dict()
+        # Load the masker object
+        mask = load_mask(data_path, MEMORY)
 
+        dict_alignment = dict()
+        dict_decoding = dict()
+        dict_labels = dict()
         for subject in self.subjects:
             (
-                decoding_contrasts,
+                data_alignment,
+                data_decoding,
                 labels,
             ) = load_dataset(subject, data_path, mask)
-            dict_labels[subject] = labels
 
-            if subject == self.target:
-                data_target = decoding_contrasts
-            else:
-                dict_sources[subject] = decoding_contrasts
+            dict_alignment[subject] = data_alignment
+            dict_decoding[subject] = data_decoding
+            dict_labels[subject] = labels
 
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(
-            dict_sources=dict_sources,
-            data_target=data_target,
+            dict_alignment=dict_alignment,
+            dict_decoding=dict_decoding,
             dict_labels=dict_labels,
             target=self.target,
             mask=mask,
