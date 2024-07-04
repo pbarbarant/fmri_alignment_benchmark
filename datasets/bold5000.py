@@ -25,7 +25,7 @@ class Dataset(BaseDataset):
             "sub-CSI1",
             "sub-CSI2",
             "sub-CSI3",
-            # "sub-CSI4",
+            "sub-CSI4",
         ],
         "fold": [
             "fold_01",
@@ -45,19 +45,22 @@ class Dataset(BaseDataset):
             "sub-CSI1",
             "sub-CSI2",
             "sub-CSI3",
-            # "sub-CSI4",
+            "sub-CSI4",
         ]
 
     def load_bold5000(self, subject, fold, data_path, mask):
-        decoding_contrasts = mask.inverse_transform(
-            joblib.load(data_path / f"{subject}_{fold}.pkl")
+        data_alignment = mask.inverse_transform(
+            joblib.load(data_path / "alignment" / f"{subject}_{fold}.pkl")
         )
-        labels = pd.read_csv(
-            data_path / "labels" / f"{subject}_{fold}.csv",
+        data_decoding = mask.inverse_transform(
+            joblib.load(data_path / "decoding" / f"{subject}_{fold}.pkl")
+        )
+        labels_decoding = pd.read_csv(
+            data_path / "decoding" / f"{subject}_{fold}_labels.csv",
             header=None,
         ).values.ravel()
 
-        return decoding_contrasts, labels
+        return data_alignment, data_decoding, labels_decoding
 
     def get_data(self):
         # The return arguments of this function are passed as keyword arguments
@@ -68,25 +71,24 @@ class Dataset(BaseDataset):
         # Load the masker object
         mask = load_mask(data_path, MEMORY)
 
-        dict_sources = dict()
+        dict_alignment = dict()
+        dict_decoding = dict()
         dict_labels = dict()
-
         for subject in self.subjects:
             (
-                decoding_contrasts,
+                data_alignment,
+                data_decoding,
                 labels,
             ) = self.load_bold5000(subject, self.fold, data_path, mask)
-            dict_labels[subject] = labels
 
-            if subject == self.target:
-                data_target = decoding_contrasts
-            else:
-                dict_sources[subject] = decoding_contrasts
+            dict_alignment[subject] = data_alignment
+            dict_decoding[subject] = data_decoding
+            dict_labels[subject] = labels
 
         # The dictionary defines the keyword arguments for `Objective.set_data`
         return dict(
-            dict_sources=dict_sources,
-            data_target=data_target,
+            dict_alignment=dict_alignment,
+            dict_decoding=dict_decoding,
             dict_labels=dict_labels,
             target=self.target,
             mask=mask,
