@@ -4,15 +4,18 @@ from nilearn import masking, maskers
 
 
 def load_dataset(subject, data_path, mask):
-    decoding_contrasts = mask.inverse_transform(
-        joblib.load(data_path / f"{subject}.pkl")
+    data_alignment = mask.inverse_transform(
+        joblib.load(data_path / "alignment" / f"{subject}.pkl")
     )
-    labels = pd.read_csv(
-        data_path / "labels" / f"{subject}.csv",
+    data_decoding = mask.inverse_transform(
+        joblib.load(data_path / "decoding" / f"{subject}.pkl")
+    )
+    labels_decoding = pd.read_csv(
+        data_path / "decoding" / f"{subject}_labels.csv",
         header=None,
     ).values.ravel()
 
-    return decoding_contrasts, labels
+    return data_alignment, data_decoding, labels_decoding
 
 
 def load_mask(data_path, memory):
