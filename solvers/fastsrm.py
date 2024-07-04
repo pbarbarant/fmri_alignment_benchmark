@@ -22,7 +22,7 @@ class Solver(BaseSolver):
     # the cross product for each key in the dictionary.
     # All parameters 'p' defined here are available as 'self.p'.
     parameters = {
-        "n_components": [50],
+        "n_components": [20],
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -34,8 +34,8 @@ class Solver(BaseSolver):
 
     def set_objective(
         self,
-        dict_sources,
-        data_target,
+        dict_alignment,
+        dict_decoding,
         dict_labels,
         target,
         mask,
@@ -45,8 +45,8 @@ class Solver(BaseSolver):
         # `Objective.get_objective`. This defines the benchmark's API for
         # passing the objective to the solver.
         # It is customizable for each benchmark.
-        self.dict_sources = dict_sources
-        self.data_target = data_target
+        self.dict_alignment = dict_alignment
+        self.dict_decoding = dict_decoding
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
@@ -73,27 +73,32 @@ class Solver(BaseSolver):
             n_jobs=5,
         )
 
+        # List of source subjects
+        source_subjects = list(self.dict_alignment.keys())
+        source_subjects.remove(self.target)
+
         alignment_array = [
             self.mask.transform(contrasts).T
-            for _, contrasts in self.dict_sources.items()
+            for _, contrasts in self.dict_alignment.items()
         ]
-        alignment_array.append(self.mask.transform(self.data_target).T)
         alignment_estimator = srm.fit(alignment_array)
 
-        for subject in self.dict_sources.keys():
-            data_decoding = self.dict_sources[subject]
+        # Launch the alignments
+        for source_subject in source_subjects:
+            source_data_decoding = self.dict_decoding[source_subject]
             aligned_data = alignment_estimator.transform(
-                [self.mask.transform(data_decoding).T]
+                [self.mask.transform(source_data_decoding).T]
             ).T
             X_train.append(aligned_data)
-            labels = self.dict_labels[subject]
+            labels = self.dict_labels[source_subject]
             y_train.append(labels)
 
         X_train = np.vstack(X_train)
         self.y_train = np.hstack(y_train).ravel()
 
         # Align the test data
-        X_test = self.mask.transform(self.data_target)
+        target_data_decoding = self.dict_decoding[self.target]
+        X_test = self.mask.transform(target_data_decoding)
         X_test = alignment_estimator.transform([X_test.T]).T
 
         # Standard scaling
