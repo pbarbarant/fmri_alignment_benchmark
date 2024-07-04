@@ -71,8 +71,6 @@ class Solver(BaseSolver):
         for source_subject in source_subjects:
             source_data_alignment = self.dict_alignment[source_subject]
             source_data_decoding = self.dict_decoding[source_subject]
-
-            import pdb; pdb.set_trace()
             
             alignment_estimator = PairwiseAlignment(
                 alignment_method="identity",
@@ -81,8 +79,6 @@ class Solver(BaseSolver):
                 memory=Memory(),
                 memory_level=1,
             ).fit(source_data_alignment, target_data_alignment)
-            
-            pdb.set_trace()
 
             aligned_data = alignment_estimator.transform(source_data_decoding)
             X_train.append(self.mask.transform(aligned_data))
