@@ -34,8 +34,8 @@ class Solver(BaseSolver):
 
     def set_objective(
         self,
-        dict_sources,
-        data_target,
+        dict_alignment,
+        dict_decoding,
         dict_labels,
         target,
         mask,
@@ -45,8 +45,8 @@ class Solver(BaseSolver):
         # `Objective.get_objective`. This defines the benchmark's API for
         # passing the objective to the solver.
         # It is customizable for each benchmark.
-        self.dict_sources = dict_sources
-        self.data_target = data_target
+        self.dict_alignment = dict_alignment
+        self.dict_decoding = dict_decoding
         self.dict_labels = dict_labels
         self.target = target
         self.mask = mask
@@ -60,8 +60,16 @@ class Solver(BaseSolver):
         y_train = []
         X_test = []
 
-        for subject in self.dict_sources.keys():
-            source_data = self.dict_sources[subject]
+        # List of source subjects
+        source_subjects = list(self.dict_alignment.keys())
+        source_subjects.remove(self.target)
+        target_data_alignment = self.dict_alignment[self.target]
+        target_data_decoding = self.dict_decoding[self.target]
+
+        # Launch the alignments
+        for source_subject in source_subjects:
+            source_data_alignment = self.dict_alignment[source_subject]
+            source_data_decoding = self.dict_decoding[source_subject]
 
             alignment_estimator = PairwiseAlignment(
                 alignment_method="ridge_cv",
@@ -70,19 +78,19 @@ class Solver(BaseSolver):
                 memory=Memory(MEMORY),
                 memory_level=1,
                 n_jobs=10,
-            ).fit(source_data, self.data_target)
+            ).fit(source_data_alignment, target_data_alignment)
 
-            data_decoding = self.dict_sources[subject]
-            aligned_data = alignment_estimator.transform(data_decoding)
+            aligned_data = alignment_estimator.transform(source_data_decoding)
             X_train.append(self.mask.transform(aligned_data))
-            labels = self.dict_labels[subject]
-            y_train.append(labels)
+            source_labels = self.dict_labels[source_subject]
+            y_train.append(source_labels)
 
+        # Train data
         X_train = np.vstack(X_train)
         self.y_train = np.hstack(y_train).ravel()
 
         # Test data
-        X_test = self.mask.transform(self.data_target)
+        X_test = self.mask.transform(target_data_decoding)
         self.y_test = self.dict_labels[self.target].ravel()
 
         # Standard scaling
